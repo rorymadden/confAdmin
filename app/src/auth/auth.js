@@ -7,7 +7,6 @@ angular.module('auth', [])
       request: function(config) {
         var token = authService.getToken();
         if(config.url.indexOf(API) === 0 && token) {
-          console.log('called', token)
           config.headers.Authorization = 'Bearer ' + token;
         }
 
@@ -16,9 +15,10 @@ angular.module('auth', [])
 
       // If a token was sent back, save it
       response: function(res) {
-        if(res.config.url.indexOf(API) === 0 && res.params.token) {
-          authService.saveToken(res.params.token);
-        }
+        //TODO: if token fails then try to get token again
+        // if(res.config.url.indexOf(API) === 0 && res.params.token) {
+        //   authService.saveToken(res.params.token);
+        // }
 
         return res;
       },

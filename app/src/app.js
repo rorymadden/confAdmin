@@ -161,7 +161,7 @@ angular
       }
   }])
 
-  .controller('MainCtrl', ['conference', function (conferences) {
+  .controller('MainCtrl', ['conferences', function (conferences) {
     this.conferences = conferences;
     this.selectedConference = null;
   }])
