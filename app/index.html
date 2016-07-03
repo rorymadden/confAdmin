@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" ng-app="conferenceMgmtApp"  ng-controller="AppCtrl as app">
   <head>
-    <title>Angular Material - Starter App</title>
+    <title ng-bind="($title || 'Home') + ' - Initiate Network'">Initiate Network</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <!-- <base href="/app/"> -->
 
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
     <link rel="stylesheet" href="../node_modules/angular-material/angular-material.css"/>
@@ -23,71 +24,82 @@
 
   </head>
 
-  <body ng-app="starterApp" layout="column" ng-controller="UserController as ul" ng-cloak>
+  <body layout="column" ng-cloak>
 
     <md-toolbar layout="row">
-      <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()" aria-label="Show User List">
+      <md-button class="menu" hide-gt-sm ng-click="app.toggleMenu()" aria-label="Show Conference Menu">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
-      <h1>Angular Material - Starter App</h1>
+<!--       <h1>Select a Conference</h1> -->
+      <md-input-container>
+        <label>Conference</label>
+        <md-select ng-model="main.conference">
+          <md-option ng-repeat="conf in main.conferences" value="{{conf._id}}" ng-disabled="$index === 1">
+            {{conf.name}}
+          </md-option>
+        </md-select>
+      </md-input-container>
     </md-toolbar>
 
     <div flex layout="row">
 
-        <md-sidenav  ng-click="ul.toggleList()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
-          <md-list>
-            <md-list-item ng-repeat="it in ul.users">
-                <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : it === ul.selected }">
-                  <md-icon md-svg-icon="{{it.avatar}}" class="avatar"></md-icon>
-                  {{it.name}}
-                </md-button>
-            </md-list-item>
-          </md-list>
-        </md-sidenav>
+      <md-sidenav ng-click="app.toggleMenu()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
+        <md-list>
+          <md-list-item ui-sref="conference({conference: app.conference})" ui-sref-active="active">
+              <md-icon md-svg-icon="menu"></md-icon>
+              Dashboard
+          </md-list-item>
 
-        <md-content flex id="content">
-          <md-icon md-svg-icon="{{ul.selected.avatar}}" class="avatar"></md-icon>
-          <h2>{{ul.selected.name}}</h2>
-          <p>{{ul.selected.content}}</p>
+          <md-list-item ui-sref="conference.details" ui-sref-active="active">
+              <md-icon md-svg-icon="share"></md-icon>
+                Details
+          </md-list-item>
 
-          <md-button class="share" md-no-ink ng-click="ul.makeContact(ul.selected)" aria-label="Share with {{ ul.selected.name }}">
-            <md-icon md-svg-icon="share"></md-icon>
-          </md-button>
-        </md-content>
+
+          <md-list-item ui-sref="conference.details" ui-sref-active="active">
+              <md-icon md-svg-icon="google_plus"></md-icon>
+                Speakers
+          </md-list-item>
+
+
+          <md-list-item ui-sref="conference.details" ui-sref-active="active">
+              <md-icon md-svg-icon="twitter"></md-icon>
+                Sponsors
+          </md-list-item>
+
+
+          <md-list-item ui-sref="conference.details" ui-sref-active="active">
+              <md-icon md-svg-icon="phone"></md-icon>
+                Agendas
+          </md-list-item>
+        </md-list>
+      </md-sidenav>
+
+      <md-content flex id="content" ui-view>
+
+      </md-content>
 
     </div>
 
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-animate/angular-animate.js"></script>
     <script src="../node_modules/angular-aria/angular-aria.js"></script>
+    <script src="../node_modules/angular-cookies/angular-cookies.js"></script>
+    <script src="../node_modules/angular-sanitize/angular-sanitize.js"></script>
+     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+     <script src="../node_modules/angular-ui-router-title/angular-ui-router-title.js"></script>
+     <script src="../node_modules/angular-load/angular-load.js"></script>
+     <script src="../node_modules/angular-markdown-directive/markdown.js"></script>
+     <script src="../node_modules/restangular/dist/restangular.js"></script>
+     <script src="../node_modules/lodash/lodash.js"></script>
     <script type="text/javascript" src="../node_modules/angular-material/angular-material.js"></script>
 
-    <script src="./src/users/Users.js"></script>
-    <script src="./src/users/UserController.js"></script>
-    <script src="./src/users/UserService.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
+    <script type="text/javascript" src="src/config.js"></script>
+    <script type="text/javascript" src="src/templates.js"></script>
 
-    <script type="text/javascript">
-
-          angular
-              .module('starterApp', ['ngMaterial', 'users'])
-              .config(function($mdThemingProvider, $mdIconProvider){
-
-                  $mdIconProvider
-                      .defaultIconSet("./assets/svg/avatars.svg", 128)
-                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("share"      , "./assets/svg/share.svg"       , 24)
-                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);
-
-                      $mdThemingProvider.theme('default')
-                          .primaryPalette('brown')
-                          .accentPalette('red');
-
-              });
-
-    </script>
+    <script type="text/javascript" src="src/user/users.js"></script>
+    <script type="text/javascript" src="src/auth/auth.js"></script>
 
   </body>
 </html>
