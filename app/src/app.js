@@ -32,8 +32,8 @@ angular
     'auth'
     // 'conferences'
   ])
-  // .constant('API', 'https://conf.initiate.network/api/v1')
-  .constant('API', 'http://localhost:3000/api/v1')
+  .constant('URL', 'http://localhost:8080/app')
+  .constant('API', 'https://conf.initiate.network/api/v1')
 
   .config(['$stateProvider', '$urlRouterProvider', '$uiViewScrollProvider', 'RestangularProvider', '$mdThemingProvider', '$mdIconProvider', '$httpProvider', 'API', '$locationProvider',
     function ($stateProvider, $urlRouterProvider, $uiViewScrollProvider, RestangularProvider, $mdThemingProvider, $mdIconProvider, $httpProvider, API, $locationProvider) {
@@ -75,6 +75,23 @@ angular
           $title: function () { return 'Home'; },
           conferences: ['Restangular', function (Restangular) {
             return Restangular.all('conferences').getList();
+          }],
+          data: ['$q', '$timeout', '$location', 'authService', 'URL',
+            function($q, $timeout, $location, authService, URL ) {
+            var deferred = $q.defer();
+            $timeout(function () {
+              if(authService.isAuthed()) {
+                console.log('authorised')
+                deferred.resolve();
+              }
+              else {
+                console.log('not authorised')
+                // console.log(URL+ '/app/login.html')
+                window.location = URL + '/login.html';
+                deferred.resolve();
+              }
+            });
+            return deferred.promise;
           }]
 //           news: ['$http', function ($http) {
 //             // var options = {
@@ -141,29 +158,15 @@ angular
   }])
   .controller('AppCtrl', ['$window', '$scope', '$state', '$rootScope', '$location', '$mdSidenav', 'authService',
     function ($window, $scope, $state, $rootScope, $location,$mdSidenav, authService) {
-
-      // *********************************
-      // Internal methods
-      // *********************************
-
-      /**
-       * Hide or Show the 'left' sideNav area
-       */
       this.toggleMenu = function () {
         $mdSidenav('left').toggle();
-      }
-
-      this.logout = function() {
-        authService.logout && authService.logout()
-      }
-      this.isAuthed = function() {
-        return authService.isAuthed ? authService.isAuthed() : false
       }
   }])
 
   .controller('MainCtrl', ['conferences', function (conferences) {
     this.conferences = conferences;
     this.selectedConference = null;
+    console.log('called')
   }])
 //   .controller('MainCtrl', ['uiGmapGoogleMapApi', 'speakers', 'sponsors', '$filter', 'streams', 'mapDetails', 'sessions',
 //     function ( uiGmapGoogleMapApi, speakers, sponsors, $filter, streams, mapDetails, sessions) {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('auth', [])
+angular.module('auth', ['angular-jwt'])
   .factory('authInterceptor', ['API', 'authService', function (API, authService) {
     return {
       // automatically attach Authorization header
@@ -24,7 +24,7 @@ angular.module('auth', [])
       },
     }
   }])
-  .service('authService', ['$window', function ($window) {
+  .service('authService', ['$window', 'jwtHelper', function ($window, jwtHelper) {
     var self = this;
 
     // Add JWT methods here
@@ -45,6 +45,7 @@ angular.module('auth', [])
     self.isAuthed = function() {
       var token = self.getToken();
       if(token) {
+        var date = jwtHelper.getTokenExpirationDate(token);
         var params = self.parseJwt(token);
         return Math.round(new Date().getTime() / 1000) <= params.exp;
       } else {
