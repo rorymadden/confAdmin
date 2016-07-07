@@ -136,8 +136,10 @@ angular
       self.currentUser = $rootScope.currentUser;
       self.$apply();
     });
-    this.conferences =$rootScope.conferences;
-    
+    $rootScope.$on('conferences', function (user) {
+      self.conferences = $rootScope.conferences;
+      self.$apply();
+    });
     
     this.toggleMenu = function () {
       $mdSidenav('left').toggle();

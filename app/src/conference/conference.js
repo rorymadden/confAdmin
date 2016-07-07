@@ -4,6 +4,7 @@ angular.module('conference', [])
     .state('conference', {
       url: '/conference/:confId',
       templateUrl: 'src/conference/conference.html',
+      controller: 'ConferenceCtrl',
       resolve: {
         conferences: ['Restangular', function (Restangular) {
           return Restangular.all('conferences').getList();
@@ -19,9 +20,7 @@ angular.module('conference', [])
     ;
     
 }])
-.controller('ConferenceCtrl', ['', function () {
-  
+.controller('ConferenceCtrl', ['conferences', 'conference', '$rootScope', function (conference, conferences, $rootScope) {
+  $rootScope.$emit('conferences', conferences);
 }])
-
-
 ;
