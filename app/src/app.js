@@ -12,7 +12,7 @@ angular
   .module('conferenceMgmtApp', [
     'ngAnimate',
     'ngCookies',
-    // 'ngMessages',
+    'ngMessages',
     'ngMaterial',
     'ngSanitize',
     'ui.router',
@@ -29,12 +29,13 @@ angular
     'config',
 
     'user',
-    'auth'
-    // 'conferences'
+    'auth',
+    'conference'
   ])
   .constant('URL', 'http://localhost:8080/app')
-  // .constant('API', 'https://conf.initiate.network/api/v1')
-  .constant('API', 'http://localhost:3000/api/v1')
+  .constant('API', 'https://conf.initiate.network/api/v1')
+  .constant('GOOGLE_AUTH', 'https://conf.initiate.network/auth/google')
+  // .constant('API', 'http://localhost:3000/api/v1')
 
   .config(['$stateProvider', '$urlRouterProvider', '$uiViewScrollProvider', 'RestangularProvider', '$mdThemingProvider', '$mdIconProvider', '$httpProvider', 'API', '$locationProvider',
     function ($stateProvider, $urlRouterProvider, $uiViewScrollProvider, RestangularProvider, $mdThemingProvider, $mdIconProvider, $httpProvider, API, $locationProvider) {
@@ -46,7 +47,7 @@ angular
     // allow cors requests
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    $httpProvider.interceptors.push('authInterceptor')
+    $httpProvider.interceptors.push('authInterceptor');
 
     //TODO: move these icons elsewhere
     $mdIconProvider
@@ -77,24 +78,7 @@ angular
           conferences: ['Restangular', function (Restangular) {
             return Restangular.all('conferences').getList();
           }],
-          data: ['$q', '$timeout', '$location', 'authService', 'URL',
-            function($q, $timeout, $location, authService, URL ) {
-            var deferred = $q.defer();
-            $timeout(function () {
-              if(authService.isAuthed()) {
-                console.log('authorised')
-                deferred.resolve();
-              }
-              else {
-                console.log('not authorised')
-                // console.log(URL+ '/app/login.html')
-                window.location = URL + '/login.html';
-                deferred.resolve();
-              }
-            });
-            return deferred.promise;
-          }]
-//           news: ['$http', function ($http) {
+          //           news: ['$http', function ($http) {
 //             // var options = {
 //             //   responseType: 'json',
 //             //   'Content-Type': 'application/json'
@@ -111,10 +95,10 @@ angular
       $uiViewScrollProvider.useAnchorScroll();
   }])
 
-  .run(['$rootScope', '$state', '$stateParams', '$window', '$location', '$injector',
-    function($rootScope, $state, $stateParams, $window, $location, $injector) {
-    $rootScope.$state = $state;
-    $rootScope.$stateParams = $stateParams;
+  .run(['$rootScope', '$state', '$stateParams', '$window', '$location', '$injector', 'authService', 'userService',
+    function($rootScope, $state, $stateParams, $window, $location, $injector, authService, userService) {
+    // $rootScope.$state = $state;
+    // $rootScope.$stateParams = $stateParams;
 
     // insert the header token into each request
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
@@ -126,22 +110,12 @@ angular
 
     // check for correct priviledges
     $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-      // if ( $rootScope.currentUser == null && toState !== 'login') {
-      //   $state.go('login');
-      // }
-//       if(toState.name === 'home') {
-//         $rootScope.navClass = 'top';
-//       }
-//       else {
-//         $rootScope.navClass = 'notTop';
-//       }
-// //       $anchorScroll();
-//
-//       // track the state the user wants to go to; authorization service needs this
-//       $rootScope.toState = toState;
-//       $rootScope.toStateParams = toStateParams;
-//       // if the principal is resolved, do an authorization check immediately. otherwise,
-//       // it'll be done when the state it resolved.
+      if (!authService.isAuthed() && (toState.name !== 'login' && toState.name !== 'settlement')) {
+        event.preventDefault();
+        $state.go('login');
+      }
+      
+      userService.setCurrentUser();
 
       // userService.authorize(event);
     });
@@ -152,23 +126,55 @@ angular
         if (!$window.ga){
           return;
         }
-
         $window.ga('send', 'pageview', { page: $location.path() });
 
       });
   }])
-  .controller('AppCtrl', ['$window', '$scope', '$state', '$rootScope', '$location', '$mdSidenav', 'authService',
-    function ($window, $scope, $state, $rootScope, $location,$mdSidenav, authService) {
-      this.toggleMenu = function () {
-        $mdSidenav('left').toggle();
-      }
+  .controller('AppCtrl', ['$rootScope', '$mdSidenav', function ($rootScope, $mdSidenav) {
+    var self = this;
+    $rootScope.$on('currentUser', function (user) {
+      self.currentUser = $rootScope.currentUser;
+      self.$apply();
+    });
+    this.conferences =$rootScope.conferences;
+    
+    
+    this.toggleMenu = function () {
+      $mdSidenav('left').toggle();
+    };
+    
+    this.constant = 'Test';
   }])
 
-  .controller('MainCtrl', ['conferences', function (conferences) {
-    this.conferences = conferences;
-    this.selectedConference = null;
-    console.log('called')
+  .controller('MainCtrl', ['conferences', 'Restangular', '$state', '$rootScope', function (conferences, Restangular, $state, $rootScope) {
+    
+    this.conferences = $rootScope.conferences = conferences;
+      
+      
+    // to populate the conference list
+    this.showCreate= false;
+    this.showCreateForm = function () {
+      this.showCreate = true;
+    };
+    
+    this.hideCreateForm = function () {
+      this.newConference = {}; // wipe the conference if closed
+      this.showCreate = false;
+    };
+
+    this.newConference = {};
+    
+    this.createConference = function () {
+      Restangular.all('conferences').post(this.newConference).then(function (conference) {
+  			$state.go('conference', {confId: conference._id});
+  		});
+    };
+    
+    this.goToConference = function () {
+      $state.go('conference', {confId: this.conference});
+    };
   }])
+  ;
 //   .controller('MainCtrl', ['uiGmapGoogleMapApi', 'speakers', 'sponsors', '$filter', 'streams', 'mapDetails', 'sessions',
 //     function ( uiGmapGoogleMapApi, speakers, sponsors, $filter, streams, mapDetails, sessions) {
 //

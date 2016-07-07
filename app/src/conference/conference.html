@@ -1,0 +1,37 @@
+<md-sidenav ng-click="app.toggleMenu()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
+  <md-list>
+    <md-list-item ui-sref="conference({conference: app.conference})" ui-sref-active="active">
+        <md-icon md-svg-icon="menu"></md-icon>
+        Dashboard
+    </md-list-item>
+
+    <md-list-item ui-sref="conference.details" ui-sref-active="active">
+        <md-icon md-svg-icon="share"></md-icon>
+          Details
+    </md-list-item>
+
+
+    <md-list-item ui-sref="conference.details" ui-sref-active="active">
+        <md-icon md-svg-icon="google_plus"></md-icon>
+          Speakers
+    </md-list-item>
+
+
+    <md-list-item ui-sref="conference.details" ui-sref-active="active">
+        <md-icon md-svg-icon="twitter"></md-icon>
+          Sponsors
+    </md-list-item>
+
+
+    <md-list-item ui-sref="conference.details" ui-sref-active="active">
+        <md-icon md-svg-icon="phone"></md-icon>
+          Agendas
+    </md-list-item>
+  </md-list>
+</md-sidenav>
+
+<div ui-view>
+  <h1>Dashboard</h1>
+  <p>This is where the magic will happen!</p>
+  
+</div>
