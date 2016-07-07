@@ -33,7 +33,8 @@ angular
     // 'conferences'
   ])
   .constant('URL', 'http://localhost:8080/app')
-  .constant('API', 'https://conf.initiate.network/api/v1')
+  // .constant('API', 'https://conf.initiate.network/api/v1')
+  .constant('API', 'http://localhost:3000/api/v1')
 
   .config(['$stateProvider', '$urlRouterProvider', '$uiViewScrollProvider', 'RestangularProvider', '$mdThemingProvider', '$mdIconProvider', '$httpProvider', 'API', '$locationProvider',
     function ($stateProvider, $urlRouterProvider, $uiViewScrollProvider, RestangularProvider, $mdThemingProvider, $mdIconProvider, $httpProvider, API, $locationProvider) {
