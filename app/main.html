@@ -1,16 +1,10 @@
-<h1> Wlecome to Initiate Network</h1>
+<h1> Welcome to Initiate Network</h1>
 
-<md-input-container>
-  <label>Conference</label>
-  <md-select ng-model="main.conference" ng-change="main.goToConference()">
-    <md-option ng-repeat="conf in main.conferences" value="{{conf._id}}" ng-disabled="$index === 1">
-      {{conf.name}} {{conf.year}}
-    </md-option>
-  </md-select>
-</md-input-container>
-<md-icon aria-label="Create a new Conference" class="material-icons md-24 add-conference" ng-click="main.showCreateForm()">
-  add box
-</md-icon>
+<h2>Select a Conference above to get started</h2>
+<md-button class="md-raised md-primary" ng-click="main.showCreateForm()" ng-if="main.isAdmin()">Create a new Conference</md-button>
+<!--<md-icon aria-label="Create a new Conference" class="material-icons md-24 add-conference" ng-click="main.showCreateForm()">-->
+<!--  add box-->
+<!--</md-icon>-->
 
 <div layout="column" ng-cloak class="md-inline-form" ng-if="main.showCreate">
   <md-content layout-padding>

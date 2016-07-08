@@ -21,7 +21,7 @@ angular.module('user', [])
             function($state, authService, $stateParams, userService ) {
             authService.saveToken($stateParams.token);
             var parsed = authService.parseJwt($stateParams.token);
-            return userService.setCurrentUser(parsed.sub).then(function (user) {
+            return userService.getCurrentUser(parsed.sub).then(function (user) {
               $state.go('home');
             }, function (err) {console.log(err)});
           }]
@@ -50,8 +50,9 @@ angular.module('user', [])
       ;
   }])
   .service('userService', ['Restangular', '$rootScope', '$q', function (Restangular, $rootScope, $q) {
-    this.setCurrentUser = function (userId) {
+    this.getCurrentUser = function (userId) {
       if($rootScope.currentUser) {
+        $rootScope.$emit('currentUser',$rootScope.currentUser);
         return $q.when($rootScope.currentUser);
       }
 
@@ -61,5 +62,26 @@ angular.module('user', [])
         $rootScope.$emit('currentUser',user);
         return user;
       });
+    };
+  }])
+  .directive('userWidget', [function () {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/user/userWidget.html',
+      scope: {
+        user: '='
+      },
+      controller: ['$rootScope', '$state', function ($rootScope, $state) {
+        
+        this.showMenu = false;
+        this.toggleMenu = function () {
+          this.showMenu = !this.showMenu;
+        };
+        
+        // this.goToConference = function () {
+        //   $state.go('conference', {confId: this.conferenceId});
+        // };
+      }],
+      controllerAs: 'userWidget'
     };
   }]);

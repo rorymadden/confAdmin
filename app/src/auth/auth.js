@@ -57,5 +57,6 @@ angular.module('auth', ['angular-jwt'])
     self.logout = function() {
       $window.localStorage.removeItem('jwtToken');
       $rootScope.currentUser = null;
+      $rootScope.conference = null;
     };
   }]);

@@ -1,3 +1,9 @@
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
 html, body {
   font-family: 'Roboto', sans-serif;
   font-size:14px;
@@ -37,6 +43,48 @@ md-list-item > button {
     padding: 0px 0px 8px 0px;
   }
 
+.md-sidenav-left md-icon {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.profile-menu .profile-details {
+  display: block;
+  margin-bottom: 5px;
+  width: 100%;
+  background-image: url('img/profile-menu.png');
+  background-size: cover;
+  min-height: 200px;
+}
+
+.profile-menu .profile-pic {
+  padding: 15px;
+}
+  
+.profile-menu .profile-pic img {
+  width: 47px;
+  height: 47px !important;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.14);
+  box-sizing: content-box;
+}
+
+.profile-menu .profile-info {
+  background: rgba(0, 0, 0, 0.37);
+  padding: 7px 14px;
+  color: #fff;
+  margin-top: 20px;
+  position: relative;
+  
+}
+
+.profile-menu .profile-info md-icon {
+  float: right;
+}
+
+.profile-menu .main-menu {
+
+}
 
 /* Primary content area */
 

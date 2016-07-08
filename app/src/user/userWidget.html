@@ -1,0 +1,22 @@
+<div class="profile-menu">
+  <div ng-click="userWidget.toggleMenu()" class="profile-details">
+    <div class="profile-pic">
+      
+      <!--<img ng-src="{{user.image}}" class="md-avatar" alt="{{user.name}}" />-->
+      <img src="/svg/avatar-1.svg" atl="{{user.name}}" />
+    </div>
+    <div class="profile-info" >
+      {{user.name}} <md-icon md-font-set="material-icons" ng-show="!userWidget.showMenu">keyboard_arrow_down</md-icon> <md-icon md-font-set="material-icons" ng-show="userWidget.showMenu">keyboard_arrow_up</md-icon>
+    </div>
+  </div>
+  <md-list ng-cloak ng-show="userWidget.showMenu" class="main-menu">
+    <md-list-item ui-sref="profile">
+      <md-icon md-font-set="material-icons">person</md-icon> View Profile
+    </md-list-item>
+    <md-list-item ui-sref="logout">
+      <md-icon md-font-set="material-icons">exit_to_app</md-icon> Logout
+    </md-list-item>
+    
+    <md-divider md-inset></md-divider>
+  </md-list>
+</div>

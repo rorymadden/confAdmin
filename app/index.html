@@ -28,21 +28,13 @@
   <body layout="column" ng-cloak>
 
     <md-toolbar layout="row">
-      <md-button class="menu" hide-gt-sm ng-click="app.toggleMenu()" aria-label="Show Conference Menu" ng-if="app.conference">
+      <md-button class="menu" ng-click="app.toggleMenu()" aria-label="Show Conference Menu" ng-if="app.conference">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
-<!--       <h1>Select a Conference</h1> -->
-      <md-input-container ng-if="app.currentUser">
-        <label>Conference</label>
-        <md-select ng-model="main.conference">
-          <md-option ng-repeat="conf in app.conferences" value="{{conf._id}}" ng-disabled="$index === 1">
-            {{conf.name}} {{conf.year}}
-          </md-option>
-        </md-select>
-      </md-input-container>
+
+      <conference-selector></conference-selector>
       
       <h1 ng-if="!app.currentUser">Welcome to Initiate Network</h1>
-      {{app.currentUser}}
       
     </md-toolbar>
     

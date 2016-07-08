@@ -95,8 +95,8 @@ angular
       $uiViewScrollProvider.useAnchorScroll();
   }])
 
-  .run(['$rootScope', '$state', '$stateParams', '$window', '$location', '$injector', 'authService', 'userService',
-    function($rootScope, $state, $stateParams, $window, $location, $injector, authService, userService) {
+  .run(['$rootScope', '$state', '$mdSidenav', '$window', '$location', '$injector', 'authService', 'userService',
+    function($rootScope, $state, $mdSidenav, $window, $location, $injector, authService, userService) {
     // $rootScope.$state = $state;
     // $rootScope.$stateParams = $stateParams;
 
@@ -115,7 +115,8 @@ angular
         $state.go('login');
       }
       
-      userService.setCurrentUser();
+      $mdSidenav('left').close();
+      // userService.setCurrentUser();
 
       // userService.authorize(event);
     });
@@ -130,15 +131,11 @@ angular
 
       });
   }])
-  .controller('AppCtrl', ['$rootScope', '$mdSidenav', function ($rootScope, $mdSidenav) {
+  .controller('AppCtrl', ['$rootScope', '$mdSidenav', '$scope', 'userService', function ($rootScope, $mdSidenav, $scope, userService) {
     var self = this;
-    $rootScope.$on('currentUser', function (user) {
-      self.currentUser = $rootScope.currentUser;
-      self.$apply();
-    });
-    $rootScope.$on('conferences', function (user) {
-      self.conferences = $rootScope.conferences;
-      self.$apply();
+    this.currentUser = userService.getCurrentUser();
+    $rootScope.$on('conference', function (event, conference) {
+      self.conference = conference;
     });
     
     this.toggleMenu = function () {
@@ -149,8 +146,8 @@ angular
   }])
 
   .controller('MainCtrl', ['conferences', 'Restangular', '$state', '$rootScope', function (conferences, Restangular, $state, $rootScope) {
-    
-    this.conferences = $rootScope.conferences = conferences;
+    $rootScope.$emit('conferences', conferences);
+    // this.conferences = $rootScope.conferences = conferences;
       
       
     // to populate the conference list
@@ -170,10 +167,6 @@ angular
       Restangular.all('conferences').post(this.newConference).then(function (conference) {
   			$state.go('conference', {confId: conference._id});
   		});
-    };
-    
-    this.goToConference = function () {
-      $state.go('conference', {confId: this.conference});
     };
   }])
   ;
