@@ -1,5 +1,33 @@
 'use strict';
 
+// import angular from '../node_modules/angular/angular.js'
+import angular from 'angular';
+
+import ngAnimate from 'angular-animate';
+// import ngCookies from 'angular-cookies';
+import ngMessages from 'angular-messages';
+import ngSanitize from 'angular-sanitize';
+import ngMaterial from 'angular-material';
+import ngAria from 'angular-aria';
+import uiRouter from 'angular-ui-router';
+import uiRouterTitle from 'angular-ui-router-title';
+import restangular from 'restangular';
+import loadsh from 'lodash';
+import ngFileUpload from 'ng-file-upload';
+
+
+// import angular from '../node_modules/angular-markdown-directive/markdown.js'
+// import angular from '../node_modules/angular-load/angular-load.js'
+
+import home from './components/home/home.js';
+import auth from './components/auth/auth.js';
+import user from './components/user/users.js';
+import speakers from './components/speakers/speakers.js';
+// import imageMgr from './components/image/image.js';
+import conference from './components/conference/conference.js';
+import './app.scss'
+
+
 /**
  * @ngdoc overview
  * @name conferenceMgmtApp
@@ -8,328 +36,50 @@
  *
  * Main module of the application.
  */
+
+import constants  from './config/app.constants';
+import appConfig  from './config/app.config';
+import appRun     from './config/app.run';
+
 angular
   .module('conferenceMgmtApp', [
     'ngAnimate',
-    'ngCookies',
+    // 'ngCookies',
     'ngMessages',
     'ngMaterial',
     'ngSanitize',
+    'ngAria',
     'ui.router',
     'ui.router.title',
     'restangular',
-    // 'uiGmapgoogle-maps',
-    'angularLoad',
-    'btford.markdown',
+    'ngFileUpload',
 
-    'templates-main',
-    //
-    // 'genericServices',
-    // 'conferenceDirectives',
-    'config',
-
+    'home',
     'user',
     'auth',
+    'speakers',
+    // 'imageMgr',
     'conference'
   ])
-  .constant('URL', 'http://localhost:8080/app')
-  .constant('API', 'https://conf.initiate.network/api/v1')
-  .constant('GOOGLE_AUTH', 'https://conf.initiate.network/auth/google')
-  // .constant('API', 'http://localhost:3000/api/v1')
 
-  .config(['$stateProvider', '$urlRouterProvider', '$uiViewScrollProvider', 'RestangularProvider', '$mdThemingProvider', '$mdIconProvider', '$httpProvider', 'API', '$locationProvider',
-    function ($stateProvider, $urlRouterProvider, $uiViewScrollProvider, RestangularProvider, $mdThemingProvider, $mdIconProvider, $httpProvider, API, $locationProvider) {
+  .constant('AppConstants', constants)
+  .config(appConfig)
+  .run(appRun)
 
-    // $locationProvider.html5Mode({
-    //   enabled:true
-    // });
+  .controller('AppCtrl', function ($rootScope, $mdSidenav, $scope, userService) {
+    'ngInject';
 
-    // allow cors requests
-    $httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    $httpProvider.interceptors.push('authInterceptor');
-
-    //TODO: move these icons elsewhere
-    $mdIconProvider
-      .defaultIconSet("./assets/svg/avatars.svg", 128)
-      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-      .icon("share"      , "./assets/svg/share.svg"       , 24)
-      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-      .icon("phone"      , "./assets/svg/phone.svg"       , 512);
-
-    $mdThemingProvider.theme('default')
-      .primaryPalette('blue')
-      .accentPalette('red');
-
-    RestangularProvider.setBaseUrl(API);
-    RestangularProvider.setRestangularFields({
-      id: "_id"
-    });
-
-    $stateProvider
-      .state('home', {
-        url: '/',
-        templateUrl: 'main.html',
-        controller: 'MainCtrl as main',
-        resolve: {
-          $title: function () { return 'Home'; },
-          conferences: ['Restangular', function (Restangular) {
-            return Restangular.all('conferences').getList();
-          }],
-          //           news: ['$http', function ($http) {
-//             // var options = {
-//             //   responseType: 'json',
-//             //   'Content-Type': 'application/json'
-//             // };
-//             return $http.jsonp('https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=4&q=http%3A%2F%2Fblog.exportleadership.com%2Frss%2Findex.xml&callback=JSON_CALLBACK');
-//           }]
-        }
-      });
-
-
-      // For any unmatched url, redirect to /
-      $urlRouterProvider.otherwise('/');
-
-      $uiViewScrollProvider.useAnchorScroll();
-  }])
-
-  .run(['$rootScope', '$state', '$mdSidenav', '$window', '$location', '$injector', 'authService', 'userService',
-    function($rootScope, $state, $mdSidenav, $window, $location, $injector, authService, userService) {
-    // $rootScope.$state = $state;
-    // $rootScope.$stateParams = $stateParams;
-
-    // insert the header token into each request
-    $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
-        if ($rootScope.oauth) headersGetter()['Authorization'] = "Bearer "+$rootScope.oauth.access_token;
-        if (data) {
-            return angular.toJson(data);
-        }
-    };
-
-    // check for correct priviledges
-    $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-      if (!authService.isAuthed() && (toState.name !== 'login' && toState.name !== 'settlement')) {
-        event.preventDefault();
-        $state.go('login');
-      }
-      
-      $mdSidenav('left').close();
-      // userService.setCurrentUser();
-
-      // userService.authorize(event);
-    });
-
-    // google analytics
-    $rootScope.$on('$stateChangeSuccess',
-      function(){
-        if (!$window.ga){
-          return;
-        }
-        $window.ga('send', 'pageview', { page: $location.path() });
-
-      });
-  }])
-  .controller('AppCtrl', ['$rootScope', '$mdSidenav', '$scope', 'userService', function ($rootScope, $mdSidenav, $scope, userService) {
     var self = this;
     this.currentUser = userService.getCurrentUser();
     $rootScope.$on('conference', function (event, conference) {
       self.conference = conference;
     });
-    
+
     this.toggleMenu = function () {
       $mdSidenav('left').toggle();
     };
-    
-    this.constant = 'Test';
-  }])
-
-  .controller('MainCtrl', ['conferences', 'Restangular', '$state', '$rootScope', function (conferences, Restangular, $state, $rootScope) {
-    $rootScope.$emit('conferences', conferences);
-    // this.conferences = $rootScope.conferences = conferences;
-      
-      
-    // to populate the conference list
-    this.showCreate= false;
-    this.showCreateForm = function () {
-      this.showCreate = true;
-    };
-    
-    this.hideCreateForm = function () {
-      this.newConference = {}; // wipe the conference if closed
-      this.showCreate = false;
-    };
-
-    this.newConference = {};
-    
-    this.createConference = function () {
-      Restangular.all('conferences').post(this.newConference).then(function (conference) {
-  			$state.go('conference', {confId: conference._id});
-  		});
-    };
-  }])
+  })
   ;
-//   .controller('MainCtrl', ['uiGmapGoogleMapApi', 'speakers', 'sponsors', '$filter', 'streams', 'mapDetails', 'sessions',
-//     function ( uiGmapGoogleMapApi, speakers, sponsors, $filter, streams, mapDetails, sessions) {
-//
-//       var self = this;
-//       this.speakers = speakers.filter(function (speaker) {
-//         return !speaker.keynote && speaker.active;
-//       });
-//       //shuffle the speakers
-//       function shuffleArray(array) {
-//         for (var i = array.length - 1; i > 0; i--) {
-//             var j = Math.floor(Math.random() * (i + 1));
-//             var temp = array[i];
-//             array[i] = array[j];
-//             array[j] = temp;
-//         }
-//         return array;
-//       }
-//       this.speakers = shuffleArray(this.speakers);
-//       //reduce to 16 speakers
-//       this.speakers = this.speakers.splice(0,16);
-//
-//       this.keynotes = sessions.filter(function (session) {
-//         return session.type === 'keynote' && session.speakers.length > 0 && session.speakers[0].active;
-//       });
-//       this.streams = streams.filter(function (stream) {
-//         return stream.active;
-//       });
-// //       this.news = news.data.responseData && news.data.responseData.feed.entries;
-//
-//       var filterSponsors = function (level) {
-//         return $filter('filter')(sponsors, {level: level});
-//       };
-//       this.sponsors = {
-//         platinum: filterSponsors(1),
-//         gold: filterSponsors(2),
-//         silver: filterSponsors(3),
-//         bronze: filterSponsors(4),
-//         media: filterSponsors(5)
-//       };
-//
-//       // boeing keynote
-//       this.sessions = sessions.filter(function (session) {
-//         return session.objectId === 'KQZ7NUwO7K';
-//       });
-//
-//       // maps
-//       self.map = {};
-//       uiGmapGoogleMapApi.then(function(map) {
-//         self.map = mapDetails.map;
-//
-//         self.marker = mapDetails.crokeParkLocation;
-//
-//         // sometimes the map isn't full screen - this is to be called on load. Might need to move
-//         // http://stackoverflow.com/questions/15458609/execute-function-on-page-load
-//         map.event.trigger(map, 'resize');
-//       });
-//
-//
-//   }])
-//   .controller('MainMinimalCtrl', [
-//     function () {
-//
-//      this.images = [
-//         {thumb: 'images/ELF2016thumbs/ELF2016_006.jpg', img: 'images/ELF2016/ELF2016_006.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_017.jpg', img: 'images/ELF2016/ELF2016_017.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_021.jpg', img: 'images/ELF2016/ELF2016_021.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_025.jpg', img: 'images/ELF2016/ELF2016_025.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_028.jpg', img: 'images/ELF2016/ELF2016_028.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_031.jpg', img: 'images/ELF2016/ELF2016_031.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_034.jpg', img: 'images/ELF2016/ELF2016_034.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_051.jpg', img: 'images/ELF2016/ELF2016_051.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_052.jpg', img: 'images/ELF2016/ELF2016_052.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_053.jpg', img: 'images/ELF2016/ELF2016_053.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_078.jpg', img: 'images/ELF2016/ELF2016_078.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_087.jpg', img: 'images/ELF2016/ELF2016_087.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_097.jpg', img: 'images/ELF2016/ELF2016_097.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_098.jpg', img: 'images/ELF2016/ELF2016_098.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_103.jpg', img: 'images/ELF2016/ELF2016_103.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_118.jpg', img: 'images/ELF2016/ELF2016_118.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_120.jpg', img: 'images/ELF2016/ELF2016_120.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_131.jpg', img: 'images/ELF2016/ELF2016_131.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_133.jpg', img: 'images/ELF2016/ELF2016_133.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_136.jpg', img: 'images/ELF2016/ELF2016_136.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_138.jpg', img: 'images/ELF2016/ELF2016_138.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_149.jpg', img: 'images/ELF2016/ELF2016_149.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_152.jpg', img: 'images/ELF2016/ELF2016_152.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_155.jpg', img: 'images/ELF2016/ELF2016_155.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_157.jpg', img: 'images/ELF2016/ELF2016_157.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_159.jpg', img: 'images/ELF2016/ELF2016_159.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_163.jpg', img: 'images/ELF2016/ELF2016_163.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_165.jpg', img: 'images/ELF2016/ELF2016_165.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_168.jpg', img: 'images/ELF2016/ELF2016_168.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_177.jpg', img: 'images/ELF2016/ELF2016_177.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_179.jpg', img: 'images/ELF2016/ELF2016_179.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_184.jpg', img: 'images/ELF2016/ELF2016_184.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_196.jpg', img: 'images/ELF2016/ELF2016_196.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_197.jpg', img: 'images/ELF2016/ELF2016_197.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_202.jpg', img: 'images/ELF2016/ELF2016_202.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_203.jpg', img: 'images/ELF2016/ELF2016_203.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_205.jpg', img: 'images/ELF2016/ELF2016_205.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_208.jpg', img: 'images/ELF2016/ELF2016_208.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_209.jpg', img: 'images/ELF2016/ELF2016_209.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_214.jpg', img: 'images/ELF2016/ELF2016_214.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_217.jpg', img: 'images/ELF2016/ELF2016_217.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_223.jpg', img: 'images/ELF2016/ELF2016_223.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_222.jpg', img: 'images/ELF2016/ELF2016_222.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_224.jpg', img: 'images/ELF2016/ELF2016_224.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_225.jpg', img: 'images/ELF2016/ELF2016_225.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_229.jpg', img: 'images/ELF2016/ELF2016_229.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_230.jpg', img: 'images/ELF2016/ELF2016_230.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_232.jpg', img: 'images/ELF2016/ELF2016_232.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_233.jpg', img: 'images/ELF2016/ELF2016_233.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_238.jpg', img: 'images/ELF2016/ELF2016_238.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_241.jpg', img: 'images/ELF2016/ELF2016_241.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_240.jpg', img: 'images/ELF2016/ELF2016_240.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_245.jpg', img: 'images/ELF2016/ELF2016_245.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_246.jpg', img: 'images/ELF2016/ELF2016_246.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_248.jpg', img: 'images/ELF2016/ELF2016_248.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_250.jpg', img: 'images/ELF2016/ELF2016_250.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_252.jpg', img: 'images/ELF2016/ELF2016_252.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_253.jpg', img: 'images/ELF2016/ELF2016_253.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_259.jpg', img: 'images/ELF2016/ELF2016_259.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_258.jpg', img: 'images/ELF2016/ELF2016_258.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_264.jpg', img: 'images/ELF2016/ELF2016_264.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_266.jpg', img: 'images/ELF2016/ELF2016_266.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_269.jpg', img: 'images/ELF2016/ELF2016_269.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_271.jpg', img: 'images/ELF2016/ELF2016_271.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_270.jpg', img: 'images/ELF2016/ELF2016_270.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_272.jpg', img: 'images/ELF2016/ELF2016_272.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_274.jpg', img: 'images/ELF2016/ELF2016_274.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_277.jpg', img: 'images/ELF2016/ELF2016_277.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_278.jpg', img: 'images/ELF2016/ELF2016_278.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_284.jpg', img: 'images/ELF2016/ELF2016_284.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_287.jpg', img: 'images/ELF2016/ELF2016_287.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_290.jpg', img: 'images/ELF2016/ELF2016_290.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_292.jpg', img: 'images/ELF2016/ELF2016_292.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_303.jpg', img: 'images/ELF2016/ELF2016_303.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_311.jpg', img: 'images/ELF2016/ELF2016_311.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_316.jpg', img: 'images/ELF2016/ELF2016_316.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_332.jpg', img: 'images/ELF2016/ELF2016_332.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_336.jpg', img: 'images/ELF2016/ELF2016_336.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_367.jpg', img: 'images/ELF2016/ELF2016_367.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_381.jpg', img: 'images/ELF2016/ELF2016_381.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_386.jpg', img: 'images/ELF2016/ELF2016_386.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_388.jpg', img: 'images/ELF2016/ELF2016_388.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_391.jpg', img: 'images/ELF2016/ELF2016_391.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_403.jpg', img: 'images/ELF2016/ELF2016_403.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_409.jpg', img: 'images/ELF2016/ELF2016_409.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_417.jpg', img: 'images/ELF2016/ELF2016_417.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_420.jpg', img: 'images/ELF2016/ELF2016_420.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_423.jpg', img: 'images/ELF2016/ELF2016_423.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_435.jpg', img: 'images/ELF2016/ELF2016_435.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_437.jpg', img: 'images/ELF2016/ELF2016_437.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_439.jpg', img: 'images/ELF2016/ELF2016_439.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_442.jpg', img: 'images/ELF2016/ELF2016_442.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_443.jpg', img: 'images/ELF2016/ELF2016_443.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_447.jpg', img: 'images/ELF2016/ELF2016_447.jpg', description: ''},
-// {thumb: 'images/ELF2016thumbs/ELF2016_448.jpg', img: 'images/ELF2016/ELF2016_448.jpg', description: ''}
-//     ];
-//   }])
 //   .controller('SpeakersController', ['speakers', 'sessions', function (speakers, sessions) {
 //     this.speakers = speakers.filter(function (speaker) {
 //       return !speaker.keynote && speaker.active;

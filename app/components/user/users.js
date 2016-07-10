@@ -1,14 +1,20 @@
 'use strict';
 
+import loginTemplate from './login.html';
+import widgetTemplate from './userWidget.html';
+
 angular.module('user', [])
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(function ($stateProvider) {
+    'ngInject';
+
     $stateProvider
       .state('login', {
         url: '/login',
-        templateUrl: 'src/user/login.html',
-        controller: ['GOOGLE_AUTH', function (GOOGLE_AUTH) {
+        templateUrl: loginTemplate,
+        controller: function (GOOGLE_AUTH) {
+          'ngInject';
           this.link = GOOGLE_AUTH;
-        }],
+        },
         controllerAs: 'login',
         resolve: {
           $title: function () { return 'Login'; }
@@ -17,14 +23,14 @@ angular.module('user', [])
       .state('settlement', {
         url: '/settlements?token&user',
         resolve: {
-          user: ['$state', 'authService', '$stateParams', 'userService',
-            function($state, authService, $stateParams, userService ) {
+          user: function($state, authService, $stateParams, userService ) {
+            'ngInject';
             authService.saveToken($stateParams.token);
             var parsed = authService.parseJwt($stateParams.token);
             return userService.getCurrentUser(parsed.sub).then(function (user) {
               $state.go('home');
             }, function (err) {console.log(err)});
-          }]
+          }
         }
       })
       .state('logout', {
@@ -34,8 +40,8 @@ angular.module('user', [])
         //   $state.go('login');
         // }]
         resolve: {
-          data: ['$q', '$timeout', '$state', 'authService',
-            function($q, $timeout, $state, authService) {
+          data: function($q, $timeout, $state, authService) {
+            'ngInject';
             var deferred = $q.defer();
             authService.logout();
             $timeout(function () {
@@ -44,44 +50,59 @@ angular.module('user', [])
               deferred.resolve();
             });
             return deferred.promise;
-          }]
+          }
         }
       })
       ;
-  }])
-  .service('userService', ['Restangular', '$rootScope', '$q', function (Restangular, $rootScope, $q) {
+  })
+  .service('userService', function (Restangular, $rootScope, $q, authService) {
+    'ngInject';
     this.getCurrentUser = function (userId) {
       if($rootScope.currentUser) {
         $rootScope.$emit('currentUser',$rootScope.currentUser);
         return $q.when($rootScope.currentUser);
       }
+      if (!userId) {
+        userId = authService.getUserFromToken();
+      }
 
-      return Restangular.one('users', userId).get().then(function (user) {
-        if (Array.isArray(user)) user = user[0];
-        $rootScope.currentUser = user;
-        $rootScope.$emit('currentUser',user);
-        return user;
-      });
+      if (userId) {
+        return Restangular.one('users', userId).get().then(function (user) {
+          if (Array.isArray(user)) user = user[0];
+          $rootScope.currentUser = user;
+          $rootScope.$emit('currentUser',user);
+          return user;
+        });
+      }
+
+
     };
-  }])
+
+  })
   .directive('userWidget', [function () {
     return {
       restrict: 'E',
-      templateUrl: 'src/user/userWidget.html',
+      templateUrl: widgetTemplate,
       scope: {
         user: '='
       },
-      controller: ['$rootScope', '$state', function ($rootScope, $state) {
-        
+      controller: function ($rootScope, $state) {
+        'ngInject';
+
+        var self = this;
         this.showMenu = false;
         this.toggleMenu = function () {
           this.showMenu = !this.showMenu;
         };
-        
+        this.user = $rootScope.currentUser;
+        $rootScope.$on('currentUser', function (event, user) {
+          self.user = user;
+        });
+
         // this.goToConference = function () {
         //   $state.go('conference', {confId: this.conferenceId});
         // };
-      }],
+      },
       controllerAs: 'userWidget'
     };
   }]);

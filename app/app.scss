@@ -1,0 +1,171 @@
+@import "~angular-material/modules/scss/angular-material";
+@import "~angular-material/modules/scss/angular-material.layouts";
+@import "~angular-material/modules/scss/angular-material.layout-attributes";
+
+[ng-click] {
+	cursor: pointer;
+}
+[data-ng-click] {
+	cursor: pointer;
+}
+[x-ng-click] {
+	cursor: pointer;
+}
+html {
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+.menu {
+	background-color: transparent;
+	border: none;
+	height: 38px;
+	margin: 16px;
+	width: 36px;
+}
+md-toolbar {
+	h3 {
+		margin: auto;
+		font-weight: 500;
+	}
+	h1 {
+		font-size: 1.250em;
+		font-weight: 400;
+	}
+}
+md-list-item {
+	>button {
+		width: 100%;
+		text-align: left !important;
+	}
+}
+md-list {
+	.md-button.selected {
+		color: #03a9f4;
+	}
+}
+md-sidenav {
+	md-list {
+		padding: 0px 0px 8px 0px;
+	}
+}
+.md-sidenav-left {
+	md-icon {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+}
+.profile-menu {
+	.profile-details {
+		display: block;
+		margin-bottom: 5px;
+		width: 100%;
+		background-image: url('./assets/img/profile-menu.png');
+		background-size: cover;
+		min-height: 172px;
+	}
+	.profile-pic {
+		padding: 60px 15px 20px 15px;
+		img {
+			width: 47px;
+			height: 47px !important;
+			border-radius: 50%;
+			border: 3px solid rgba(0, 0, 0, 0.14);
+			box-sizing: content-box;
+		}
+	}
+	.profile-info {
+		background: rgba(0, 0, 0, 0.8);
+		padding: 7px 14px;
+		color: #fff;
+		margin-top: 20px;
+		position: relative;
+		md-icon {
+			color: #fff;
+			float: right;
+		}
+	}
+}
+#content {
+	overflow: hidden;
+	padding-left: 40px;
+	padding-right: 40px;
+	padding-top: 5px;
+	.md-button.share {
+		background-color: transparent;
+		border: none;
+		width: 48px;
+		height: 48px;
+		margin: 8px auto 16px 0;
+		position: absolute;
+		top: 10px;
+		right: 25px;
+		>md-icon {
+			fill: black;
+			width: 36px;
+			height: 36px;
+		}
+		&:active {
+			>md-icon {
+				background-color: #dadada;
+				border-radius: 75%;
+				padding: 4px;
+				transition: all 100ms ease-out 30ms;
+			}
+		}
+	}
+	md-icon.avatar {
+		margin-top: 10px;
+	}
+	img {
+		display: block;
+		height: auto;
+		max-width: 500px;
+	}
+}
+md-button.menuBtn {
+	>md-icon {
+		fill: white;
+		width: 24px;
+		height: 24px;
+	}
+}
+.content-wrapper {
+	position: relative;
+}
+.avatar {
+	position: relative;
+	width: 128px;
+	height: 128px;
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	display: inline-block;
+	overflow: hidden;
+	margin: 0px;
+	vertical-align: middle;
+	zoom: 0.70;
+	transform: translateZ(0);
+	-webkit-transform: scale(0.70);
+	-moz-transform: scale(0.70);
+}
+
+
+md-bottom-sheet {
+	md-icon {
+		margin-right: 20px;
+	}
+}
+span.name {
+	font-weight: bold;
+	font-size: 1.1em;
+	padding-left: 5px;
+}
