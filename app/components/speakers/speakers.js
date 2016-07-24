@@ -76,7 +76,7 @@ angular.module('speakers', [])
     // })
     // create a new
     if (newSpeaker) {
-      Restangular.one('conferences', $stateParams.confId).all('speakers').post(this.newSpeaker).then(function (speaker) {
+      Restangular.one('conferences', $stateParams.confId).all('speakers').post(this.speaker).then(function (speaker) {
         $state.go('conference.speakers.speaker', {speakerId: speaker._id});
       });
     }
