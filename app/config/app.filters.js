@@ -4,11 +4,13 @@ angular.module('app.filters', [])
   'ngInject';
 
   return function (flag) {
-    var icon = flag ?
-      '<md-icon md-font-set="material-icons" class="success">check</md-icon>' :
-      '<md-icon md-font-set="material-icons" class="danger">close</md-icon>';
+    // var icon = flag ?
+    //   '<md-icon md-font-set="material-icons" class="success">check</md-icon>' :
+    //   '<md-icon md-font-set="material-icons" class="danger">close</md-icon>';
 
-    // console.log($sce.trustAsHtml(icon))
+    var icon = flag ?
+      '<md-icon md-font-icon="fa-check" class="fa success" alt="Yes"></md-icon>' :
+      '<md-icon md-font-icon="fa-close" class="fa danger" alt="No"></md-icon>' ;
     return $sce.trustAsHtml(icon);
   };
 })
@@ -18,10 +20,11 @@ angular.module('app.filters', [])
   return function (social) {
     var icons = '';
     Object.keys(social).forEach(function (socialSite) {
-      icons += '<md-icon md-font-set="material-icons">' + socialSite + '</md-icon>';
+      // icons += '<md-icon md-font-set="material-icons">' + socialSite + '</md-icon>';
+      icons += '<md-icon md-font-icon="fa-' + socialSite + '" class="fa" alt="' + socialSite + '"></md-icon>';
     });
     // console.log($sce.trustAsHtml(icons))
-    return icons;
-    // return $sce.trustAsHtml(icons);
+    // return icons;
+    return $sce.trustAsHtml(icons);
   };
 });
