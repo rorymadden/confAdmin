@@ -6,7 +6,7 @@
       <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>
     </div>
   </md-toolbar>
-  
+
   <!-- exact table from live demo -->
   <md-table-container>
     <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->
@@ -35,7 +35,7 @@
           <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>
           <td md-cell>{{speaker.company}}</td>
           <td md-cell>{{speaker.country | countryCode}}</td>
-          <td md-cell ng-bind-html>{{speaker.social | socialFlag}}</td>
+          <td md-cell ng-bind-html="speaker.social | socialFlag"></td>
           <td md-cell>{{speaker.images}}</td>
           <td md-cell ng-bind-html>{{speaker.keynote | booleanFlag}}</td>
           <td md-cell ng-bind-html>{{speaker.published | booleanFlag}}</td>
@@ -44,9 +44,9 @@
       </tbody>
     </table>
   </md-table-container>
-  
+
   <md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>
-  
+
   <!--
   <td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.linkedIn, 'glyphicon-remove': !speaker.linkedIn}"></i></td>
   <td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.twitter, 'glyphicon-remove': !speaker.twitter}"></i></td>

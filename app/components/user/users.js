@@ -11,9 +11,9 @@ angular.module('user', [])
       .state('login', {
         url: '/login',
         templateUrl: loginTemplate,
-        controller: function (GOOGLE_AUTH) {
+        controller: function (AppConstants) {
           'ngInject';
-          this.link = GOOGLE_AUTH;
+          this.link = AppConstants.GOOGLE_AUTH;
         },
         controllerAs: 'login',
         resolve: {

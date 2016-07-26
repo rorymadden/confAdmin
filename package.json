@@ -48,7 +48,8 @@
   "scripts": {
     "prestart": "npm update",
     "dist": "webpack -p",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base dist --host $IP --port $PORT",
+    "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base dist",
+    "dev-c9": "webpack-dev-server --devtool eval --progress --colors --hot --content-base dist --host $IP --port $PORT",
     "deploy": "NODE_ENV=production webpack -p --config config/webpack.production.config.js"
   }
 }
