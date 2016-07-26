@@ -22,11 +22,12 @@ angular.module('speakers', [])
     .state('conference.speakers.new', {
       url: '/new',
       templateUrl: speakerFormTemplate,
-      controller: 'CreateSpeakerCtrl as speakerCtrl',
+      controller: 'SpeakerFormCtrl as speakerCtrl',
       resolve: {
-        $title: function () { return 'Create a New Speaker'; }
+        $title: function () { return 'Create a New Speaker'; },
+        speaker: function () { return {} }
       },
-      speaker: function () { return {} }
+      
 
     })
     .state('conference.speakers.speaker', {
@@ -45,7 +46,7 @@ angular.module('speakers', [])
 })
 .controller('SpeakersCtrl', function (speakers, Restangular, $state, $stateParams, $mdMedia, $mdDialog) {
   'ngInject';
-  var self = this;
+  // var self = this;
   this.speakers = Restangular.copy(speakers); //TODO: see if we are editing from here?
 
   this.query = {
@@ -55,8 +56,11 @@ angular.module('speakers', [])
   };
 })
 
-.controller('SpeakerFormCtrl', function (speaker, Restangular, $state, $stateParams) {
+.controller('SpeakerFormCtrl', function (speaker, Restangular, $state, $stateParams, AppConstants) {
   'ngInject';
+  
+  this.countries = AppConstants.COUNTRIES;
+  console.log(this.countries);
 
   var newSpeaker = true;
   this.speaker = Restangular.copy(speaker);
@@ -77,7 +81,7 @@ angular.module('speakers', [])
     // create a new
     if (newSpeaker) {
       Restangular.one('conferences', $stateParams.confId).all('speakers').post(this.speaker).then(function (speaker) {
-        $state.go('conference.speakers.speaker', {speakerId: speaker._id});
+        $state.go('conference.speakers');
       });
     }
     else {
@@ -91,13 +95,13 @@ angular.module('speakers', [])
     Restangular.one('conferences', $stateParams.confId).one('speakers', $stateParams.speakerId).remove().then(function (speaker) {
       $state.go('conference.speakers');
     });
-  }
+  };
 })
-.filter('countryCode', function (countries) {
+.filter('countryCode', function (AppConstants) {
   'ngInject';
 
   return function (countryCode) {
-    var country = countries.filter(function (country) {
+    var country = AppConstants.COUNTRIES.filter(function (country) {
       return country.code === countryCode;
     });
     return country[0].country;

@@ -1,90 +1,86 @@
-<md-content layout-padding>
-  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()" >
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>Speaker Details</h2>
-        <span flex></span>
-        <md-button class="md-icon-button" ng-click="speakerCtrl.cancel()">
-          <md-icon md-font-set="material-icons">close</md-icon>
-        </md-button>
-      </div>
-    </md-toolbar>
-    <md-content>
-      <div class="md-content">
-        <div layout-gt-sm="row">
-          <md-input-container class="md-block">
-            <label>Title</label>
-            <input ng-model="speakerCtrl.speaker.title">
-          </md-input-container>
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>First Name</label>
-            <input ng-model="speakerCtrl.speaker.first" required>
-            <div ng-messages="speakerCtrl.speaker.first.$error" role="alert">
-              <div ng-message-exp="['required']">
-                A first name is required.
-              </div>
-            </div>
-          </md-input-container>
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>Last Name</label>
-            <input ng-model="speakerCtrl.speaker.last" required>
-            <div ng-messages="speakerCtrl.speaker.last.$error" role="alert">
-              <div ng-message-exp="['required']">
-                A last name is required.
-              </div>
-            </div>
-          </md-input-container>
-        </div>
-
+<div>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Speaker Details</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ui-sref="conference.speakers">
+        <md-icon md-font-set="material-icons">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">
+    <md-content layout-padding="">
+      <div layout-gt-sm="row">
         <md-input-container class="md-block">
-          <label>Email</label>
-          <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\..+$/" />
-          <div ng-messages="speakerCtrl.speaker.email.$error" role="alert">
-            <div ng-message-exp="['required','pattern']">
-              Your must enter an e-mail address.
-            </div>
-          </div>
+          <label>Title</label>
+          <input ng-model="speakerCtrl.speaker.title">
         </md-input-container>
-
-        <md-input-container class="md-block">
-          <label>Company</label>
-          <input ng-model="speakerCtrl.speaker.company" required>
-          <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>First Name</label>
+          <input ng-model="speakerCtrl.speaker.first" required>
+          <div ng-messages="speakerCtrl.speaker.first.$error" role="alert">
             <div ng-message-exp="['required']">
-              A company is required.
+              A first name is required.
             </div>
           </div>
         </md-input-container>
-
-        <md-input-container class="md-block">
-          <label>Country</label>
-          <md-select ng-model="speakerCtrl.speaker.country">
-            <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">
-              {{country.country}}
-            </md-option>
-          </md-select>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Last Name</label>
+          <input ng-model="speakerCtrl.speaker.last" required>
+          <div ng-messages="speakerCtrl.speaker.last.$error" role="alert">
+            <div ng-message-exp="['required']">
+              A last name is required.
+            </div>
+          </div>
         </md-input-container>
-
-        <md-input-container class="md-block">
-          <label>Bio</label>
-          <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus></textarea>
-
-        </md-input-container>
-
-        <div layout-gt-sm="row">
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>Twitter</label>
-            <input ng-model="speakerCtrl.speaker.social.twitter">
-          </md-input-container>
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>LinkedIn</label>
-            <input ng-model="speakerCtrl.speaker.social.linkedIn">
-          </md-input-container>
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>Instagram</label>
-            <input ng-model="speakerCtrl.speaker.social.instagram">
-          </md-input-container>
+      </div>
+      <md-input-container class="md-block">
+        <label>Email</label>
+        <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\..+$/" />
+        <div ng-messages="speakerCtrl.speaker.email.$error" role="alert">
+          <div ng-message-exp="['required','pattern']">
+            Your must enter an e-mail address.
+          </div>
         </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Company</label>
+        <input ng-model="speakerCtrl.speaker.company" required>
+        <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">
+          <div ng-message-exp="['required']">
+            A company is required.
+          </div>
+        </div>
+      </md-input-container>
+
+      <md-input-container class="md-block">
+        <label>Country</label>
+        <md-select ng-model="speakerCtrl.speaker.country">
+          <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">
+            {{country.country}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+
+      <md-input-container class="md-block">
+        <label>Bio</label>
+        <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus maxlength="150" rows="5"></textarea>
+      </md-input-container>
+      
+
+      <div layout-gt-sm="row">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Twitter</label>
+          <input ng-model="speakerCtrl.speaker.social.twitter">
+        </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>LinkedIn</label>
+          <input ng-model="speakerCtrl.speaker.social.linkedIn">
+        </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Instagram</label>
+          <input ng-model="speakerCtrl.speaker.social.instagram">
+        </md-input-container>
       </div>
     </md-content>
     <md-actions layout="row">
@@ -93,4 +89,6 @@
       <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>
     </md-actions>
   </form>
-</md-content>
+</div>
+
+

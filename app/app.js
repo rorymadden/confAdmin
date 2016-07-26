@@ -20,6 +20,7 @@ import ngFileUpload from 'ng-file-upload';
 // import angular from '../node_modules/angular-load/angular-load.js'
 
 import home from './components/home/home.js';
+import filters from './config/app.filters.js';
 import auth from './components/auth/auth.js';
 import user from './components/user/users.js';
 import speakers from './components/speakers/speakers.js';
@@ -54,6 +55,7 @@ angular
     'restangular',
     'ngFileUpload',
 
+    'app.filters',
     'home',
     'user',
     'auth',

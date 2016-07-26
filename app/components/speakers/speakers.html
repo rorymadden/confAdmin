@@ -1,53 +1,56 @@
-<md-toolbar class="md-table-toolbar md-accent">
-  <div class="md-toolbar-tools">
-    <span>Speakers</span>
-    <span flex></span>
-    <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>
-  </div>
-</md-toolbar>
+<div ui-view>
+  <md-toolbar class="md-table-toolbar md-accent">
+    <div class="md-toolbar-tools">
+      <span>Speakers</span>
+      <span flex></span>
+      <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>
+    </div>
+  </md-toolbar>
+  
+  <!-- exact table from live demo -->
+  <md-table-container>
+    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->
+    <table md-table md-row-select multiple ng-model="selected">
+      <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->
+      <thead md-head md-order="speakers.query.order">
+        <tr md-row>
+          <th md-column md-order-by="nameToLower"><span>First</span></th>
+          <th md-column md-order-by="nameToLower"><span>Last</span></th>
+          <th md-column md-order-by="nameToLower"><span>Title</span></th>
+          <th md-column><span>Bio</span></th>
+          <th md-column md-order-by="nameToLower"><span>Company</span></th>
+          <th md-column md-order-by="nameToLower"><span>Country</span></th>
+          <th md-column>Social</th>
+          <th md-column>Images</th>
+          <th md-column>Keynote</th>
+          <th md-column>Published</th>
+          <th md-column>Active</th>
+        </tr>
+      </thead>
+      <tbody md-body>
+        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers">
+          <td md-cell>{{speaker.first}}</td>
+          <td md-cell>{{speaker.last}}</td>
+          <td md-cell>{{speaker.title}}</td>
+          <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>
+          <td md-cell>{{speaker.company}}</td>
+          <td md-cell>{{speaker.country | countryCode}}</td>
+          <td md-cell ng-bind-html>{{speaker.social | socialFlag}}</td>
+          <td md-cell>{{speaker.images}}</td>
+          <td md-cell ng-bind-html>{{speaker.keynote | booleanFlag}}</td>
+          <td md-cell ng-bind-html>{{speaker.published | booleanFlag}}</td>
+          <td md-cell ng-bind-html>{{speaker.active | booleanFlag}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </md-table-container>
+  
+  <md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>
+  
+  <!--
+  <td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.linkedIn, 'glyphicon-remove': !speaker.linkedIn}"></i></td>
+  <td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.twitter, 'glyphicon-remove': !speaker.twitter}"></i></td>
+  <td><button class="btn btn-primary" ng-click="adminSpeakers.addSpeaker(speaker)"><i class="glyphicon glyphicon-pencil"></button></td>
+  <td><button class="btn" ng-class="{'btn-danger': speaker.active, 'btn-default': !speaker.active}" ng-click="adminSpeakers.toggleSpeaker(speaker)"><i class="glyphicon" ng-class="{'glyphicon-remove': speaker.active, 'glyphicon-ok': !speaker.active}"></button></td> -->
 
-<!-- exact table from live demo -->
-<md-table-container>
-  <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->
-  <table md-table md-row-select multiple ng-model="selected">
-    <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->
-    <thead md-head md-order="speakers.query.order">
-      <tr md-row>
-        <th md-column md-order-by="nameToLower"><span>First</span></th>
-        <th md-column md-order-by="nameToLower"><span>Last</span></th>
-        <th md-column md-order-by="nameToLower"><span>Title</span></th>
-        <th md-column><span>Bio</span></th>
-        <th md-column md-order-by="nameToLower"><span>Company</span></th>
-        <th md-column md-order-by="nameToLower"><span>Country</span></th>
-        <th md-column>Social</th>
-        <th md-column>Images</th>
-        <th md-column>Keynote</th>
-        <th md-column>Published</th>
-        <th md-column>Active</th>
-      </tr>
-    </thead>
-    <tbody md-body>
-      <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers">
-        <td md-cell>{{speaker.first}}</td>
-        <td md-cell>{{speaker.last}}</td>
-        <td md-cell>{{speaker.title}}</td>
-        <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if={{speaker.bio && speaker.bio.length > 15}}>...</span></td>
-        <td md-cell>{{speaker.company}}</td>
-        <td md-cell>{{speaker.country | countryCode}}</td>
-        <td md-cell>{{speaker.social}}</td>
-        <td md-cell>{{speaker.images}}</td>
-        <td md-cell>{{speaker.keynote}}</td>
-        <td md-cell>{{speaker.published}}</td>
-        <td md-cell>{{speaker.active}}</td>
-      </tr>
-    </tbody>
-  </table>
-</md-table-container>
-
-<md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>
-
-<!--
-<td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.linkedIn, 'glyphicon-remove': !speaker.linkedIn}"></i></td>
-<td><i class="glyphicon" ng-class="{'glyphicon-ok': speaker.twitter, 'glyphicon-remove': !speaker.twitter}"></i></td>
-<td><button class="btn btn-primary" ng-click="adminSpeakers.addSpeaker(speaker)"><i class="glyphicon glyphicon-pencil"></button></td>
-<td><button class="btn" ng-class="{'btn-danger': speaker.active, 'btn-default': !speaker.active}" ng-click="adminSpeakers.toggleSpeaker(speaker)"><i class="glyphicon" ng-class="{'glyphicon-remove': speaker.active, 'glyphicon-ok': !speaker.active}"></button></td> -->
+</div>
