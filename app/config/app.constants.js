@@ -1,9 +1,14 @@
 
+var API_URL = 'http://localhost:3000';
+var APP_URL = 'http://localhost:8080/app';
+// var BASE_API_URL = 'https://conf.initiate.network';
+// var APP_URL = 'http://localhost:8080/app';
+
 const AppConstants = {
   eventTimeZone: '-0000',
-  API: 'https://conf.initiate.network/api/v1',
-  URL: 'http://localhost:8080/app',
-  GOOGLE_AUTH: 'https://conf.initiate.network/auth/google',
+  API: API_URL + '/api/v1',
+  URL: APP_URL,
+  GOOGLE_AUTH: API_URL + '/auth/google',
   PARTNER: [{
           code: 1,
           name: 'Platinum'

@@ -3,6 +3,10 @@
     <div class="md-toolbar-tools">
       <span>Speakers</span>
       <span flex></span>
+      <!-- <md-switch ng-model="speakers.activeFlag" aria-label="Active Switch" class="md-primary" >
+        {{ speakers.activeFlag | activeStatus}}
+      </md-switch> -->
+      <span ng-bind-html="speakers.activeFlag | booleanFlag" ng-click="speakers.toggleActive()"></span>
       <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>
     </div>
   </md-toolbar>
@@ -10,7 +14,7 @@
   <!-- exact table from live demo -->
   <md-table-container>
     <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->
-    <table md-table md-row-select multiple ng-model="selected">
+    <table md-table md-row-select multiple ng-model="selected" id="speakerList">
       <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->
       <thead md-head md-order="speakers.query.order">
         <tr md-row>
@@ -21,14 +25,14 @@
           <th md-column md-order-by="nameToLower"><span>Company</span></th>
           <th md-column md-order-by="nameToLower"><span>Country</span></th>
           <th md-column>Social</th>
-          <th md-column>Images</th>
           <th md-column>Keynote</th>
-          <th md-column>Published</th>
-          <th md-column>Active</th>
+          <th md-column class="th-edit">Edit</th>
+          <th md-column class="th-edit">Published</th>
+          <th md-column class="th-edit">Images</th>
         </tr>
       </thead>
       <tbody md-body>
-        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers">
+        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers | activeFlag:speakers.activeFlag">
           <td md-cell>{{speaker.first}}</td>
           <td md-cell>{{speaker.last}}</td>
           <td md-cell>{{speaker.title}}</td>
@@ -36,10 +40,14 @@
           <td md-cell>{{speaker.company}}</td>
           <td md-cell>{{speaker.country | countryCode}}</td>
           <td md-cell ng-bind-html="speaker.social | socialFlag"></td>
-          <td md-cell>{{speaker.images}}</td>
-          <td md-cell ng-bind-html="speaker.keynote | booleanFlag"></td>
-          <td md-cell ng-bind-html="speaker.published | booleanFlag"></td>
-          <td md-cell ng-bind-html="speaker.active | booleanFlag"></td>
+          <td md-cell ng-bind-html="speaker.keynote | booleanFlag:true"></td>
+          <td md-cell>
+            <a ui-sref="conference.speakers.speaker({speakerId: speaker._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>
+            <a ng-click="speakers.removeSpeaker($event, speaker)" ng-show="speaker.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>
+            <a ng-click="speakers.reactivateSpeaker(speaker)" ng-show="!speaker.active"><md-icon md-font-set="material-icons">undo</md-icon></a>
+          </td>
+          <td md-cell ng-bind-html="speaker.published | booleanFlag" ng-click="speakers.confirmPublication($event, speaker)"></td>
+          <td md-cell ng-bind-html="speaker.images | speakerImages"></td>
         </tr>
       </tbody>
     </table>

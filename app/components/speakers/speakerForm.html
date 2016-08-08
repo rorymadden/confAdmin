@@ -13,7 +13,7 @@
       <div layout-gt-sm="row">
         <md-input-container class="md-block">
           <label>Title</label>
-          <input ng-model="speakerCtrl.speaker.title">
+          <input ng-model="speakerCtrl.speaker.title" required>
         </md-input-container>
         <md-input-container class="md-block" flex-gt-sm>
           <label>First Name</label>
@@ -55,7 +55,7 @@
 
       <md-input-container class="md-block">
         <label>Country</label>
-        <md-select ng-model="speakerCtrl.speaker.country">
+        <md-select ng-model="speakerCtrl.speaker.country" required>
           <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">
             {{country.country}}
           </md-option>
@@ -66,7 +66,7 @@
         <label>Bio</label>
         <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus maxlength="150" rows="5"></textarea>
       </md-input-container>
-      
+
 
       <div layout-gt-sm="row">
         <md-input-container class="md-block" flex-gt-sm>
@@ -82,6 +82,11 @@
           <input ng-model="speakerCtrl.speaker.social.instagram">
         </md-input-container>
       </div>
+      <div layout-gt-sm="row">
+        <md-switch ng-model="speakerCtrl.speaker.keynote" aria-label="Keynote" class="md-primary" >
+          Keynote
+        </md-switch>
+      </div>
     </md-content>
     <md-actions layout="row">
       <span flex></span>
@@ -90,5 +95,3 @@
     </md-actions>
   </form>
 </div>
-
-
