@@ -1,8 +1,8 @@
 
-var API_URL = 'http://localhost:3000';
-var APP_URL = 'http://localhost:8080/app';
-// var BASE_API_URL = 'https://conf.initiate.network';
+// var API_URL = 'http://localhost:3000';
 // var APP_URL = 'http://localhost:8080/app';
+var API_URL = 'https://conf.initiate.network';
+var APP_URL = 'http://localhost:8080';
 
 const AppConstants = {
   eventTimeZone: '-0000',

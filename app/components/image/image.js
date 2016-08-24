@@ -11,6 +11,10 @@ angular.module('imageMgr')
       }
     **/
     uploadImage: function (details, callback) {
+      
+
+
+
       cloudinary.openUploadWidget({
         cloud_name: AppConstants.cloudinaryDetails.cloud_name,
         upload_preset: AppConstants.cloudinaryDetails.upload_preset,
