@@ -35,7 +35,7 @@
         <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers | activeFlag:speakers.activeFlag">
           <td md-cell>{{speaker.first}}</td>
           <td md-cell>{{speaker.last}}</td>
-          <td md-cell>{{speaker.title}}</td>
+          <td md-cell>{{speaker.jobTitle}}</td>
           <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>
           <td md-cell>{{speaker.company}}</td>
           <td md-cell>{{speaker.country | countryCode}}</td>

@@ -11,10 +11,6 @@
   <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">
     <md-content layout-padding="">
       <div layout-gt-sm="row">
-        <md-input-container class="md-block">
-          <label>Title</label>
-          <input ng-model="speakerCtrl.speaker.title" required>
-        </md-input-container>
         <md-input-container class="md-block" flex-gt-sm>
           <label>First Name</label>
           <input ng-model="speakerCtrl.speaker.first" required>
@@ -43,15 +39,22 @@
           </div>
         </div>
       </md-input-container>
-      <md-input-container class="md-block">
-        <label>Company</label>
-        <input ng-model="speakerCtrl.speaker.company" required>
-        <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">
-          <div ng-message-exp="['required']">
-            A company is required.
+
+      <div layout-gt-sm="row">
+        <md-input-container class="md-block">
+          <label>Title</label>
+          <input ng-model="speakerCtrl.speaker.jobTitle" required>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Company</label>
+          <input ng-model="speakerCtrl.speaker.company" required>
+          <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">
+            <div ng-message-exp="['required']">
+              A company is required.
+            </div>
           </div>
-        </div>
-      </md-input-container>
+        </md-input-container>
+      </div>
 
       <md-input-container class="md-block">
         <label>Country</label>
