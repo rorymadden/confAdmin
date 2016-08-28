@@ -618,10 +618,10 @@ $templateCache.put('speakers/speakers.html','<div ui-view>\n  <md-toolbar class=
 $templateCache.put('user/login.html','\n<md-button class="md-raised" ng-href={{login.link}}>Login</md-button>\n');
 $templateCache.put('user/userWidget.html','<div class="profile-menu">\n  <div ng-click="userWidget.toggleMenu()" class="profile-details">\n    <div class="profile-pic">\n\n      <!--<img ng-src="{{userWidget.user.image}}" class="md-avatar" alt="{{userWidget.user.name}}" />-->\n      <!-- <img src="./img/svg/avatar-1.svg" alt="{{userWidget.user.name}}" /> -->\n    </div>\n    <div class="profile-info" >\n      {{userWidget.user.name}} <md-icon md-font-set="material-icons" ng-show="!userWidget.showMenu">keyboard_arrow_down</md-icon> <md-icon md-font-set="material-icons" ng-show="userWidget.showMenu">keyboard_arrow_up</md-icon>\n    </div>\n  </div>\n  <md-list ng-cloak ng-show="userWidget.showMenu" class="main-menu">\n    <md-list-item ui-sref="profile">\n      <md-icon md-font-set="material-icons">person</md-icon> View Profile\n    </md-list-item>\n    <md-list-item ui-sref="logout">\n      <md-icon md-font-set="material-icons">exit_to_app</md-icon> Logout\n    </md-list-item>\n\n    <md-divider></md-divider>\n  </md-list>\n</div>\n');}]);
 
-// var API_URL = 'http://localhost:3000';
+// var API_URL = 'http://localhost:8080';
 // var APP_URL = 'http://localhost:8080/app';
 var API_URL = 'https://conf.initiate.network';
-var APP_URL = 'http://localhost:8080';
+var APP_URL = 'http://admin.initiate.network';
 
 angular.module('constants', [])
 
