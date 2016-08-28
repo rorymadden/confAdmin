@@ -1,6 +1,6 @@
 
-import conferenceTemplate from './conference.html';
-import confSelectorTemplate from './conferenceSelector.html';
+// import conferenceTemplate from './conference.html';
+// import confSelectorTemplate from './conferenceSelector.html';
 
 angular.module('conference', [])
 .config(function ($stateProvider) {
@@ -9,7 +9,8 @@ angular.module('conference', [])
   $stateProvider
     .state('conference', {
       url: '/conference/:confId',
-      templateUrl: conferenceTemplate,
+      // templateUrl: conferenceTemplate,
+      templateUrl: 'conference/conference.html',
       controller: 'ConferenceCtrl as conf',
       resolve: {
         conferences: ['Restangular', function (Restangular) {
@@ -29,7 +30,8 @@ angular.module('conference', [])
 .directive('conferenceSelector', function () {
   return {
     restrict: 'E',
-    templateUrl: confSelectorTemplate,
+    // templateUrl: confSelectorTemplate,
+    templateUrl: 'conference/conferenceSelector.html',
     controller: function ($rootScope, $state, $scope, $stateParams) {
       'ngInject';
 

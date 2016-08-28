@@ -1,7 +1,7 @@
 'use strict';
-
-import loginTemplate from './login.html';
-import widgetTemplate from './userWidget.html';
+//
+// import loginTemplate from './login.html';
+// import widgetTemplate from './userWidget.html';
 
 angular.module('user', [])
   .config(function ($stateProvider) {
@@ -10,10 +10,11 @@ angular.module('user', [])
     $stateProvider
       .state('login', {
         url: '/login',
-        templateUrl: loginTemplate,
-        controller: function (AppConstants) {
+        // templateUrl: loginTemplate,
+        templateUrl: 'user/login.html',
+        controller: function (GOOGLE_AUTH) {
           'ngInject';
-          this.link = AppConstants.GOOGLE_AUTH;
+          this.link = GOOGLE_AUTH;
         },
         controllerAs: 'login',
         resolve: {
@@ -82,7 +83,8 @@ angular.module('user', [])
   .directive('userWidget', [function () {
     return {
       restrict: 'E',
-      templateUrl: widgetTemplate,
+      // templateUrl: widgetTemplate,
+      templateUrl: 'user/userWidget.html',
       scope: {
         user: '='
       },

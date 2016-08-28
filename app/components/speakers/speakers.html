@@ -47,7 +47,10 @@
             <a ng-click="speakers.reactivateSpeaker(speaker)" ng-show="!speaker.active"><md-icon md-font-set="material-icons">undo</md-icon></a>
           </td>
           <td md-cell ng-bind-html="speaker.published | booleanFlag" ng-click="speakers.confirmPublication($event, speaker)"></td>
-          <td md-cell ng-bind-html="speaker.images | speakerImages"></td>
+          <td md-cell>
+            <span ng-bind-html="speaker.profilePic | photoIcon:'Profile Pic':'person_pin'" ng-click="speakers.toggleImage(speaker, 'profilePic')"></span>
+            <span ng-bind-html="speaker.companyLogo | photoIcon:'Company Logo':'business'" ng-click="speakers.toggleImage(speaker, 'companyLogo')"></span>
+          </td>
         </tr>
       </tbody>
     </table>

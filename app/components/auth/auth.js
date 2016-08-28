@@ -1,16 +1,16 @@
 'use strict';
 
-import angularJwt from 'angular-jwt';
+// import angularJwt from 'angular-jwt';
 
 angular.module('auth', ['angular-jwt'])
-  .factory('authInterceptor', function (AppConstants, authService) {
+  .factory('authInterceptor', function (API, authService) {
     'ngInject';
 
     return {
       // automatically attach Authorization header
       request: function(config) {
         var token = authService.getToken();
-        if(config.url.indexOf(AppConstants.API) === 0 && token) {
+        if(config.url.indexOf(API) === 0 && token) {
           config.headers.Authorization = 'Bearer ' + token;
         }
 

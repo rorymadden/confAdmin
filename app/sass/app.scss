@@ -1,6 +1,9 @@
-@import "~angular-material/modules/scss/angular-material";
-@import "~angular-material/modules/scss/angular-material.layouts";
-@import "~angular-material/modules/scss/angular-material.layout-attributes";
+// @import "angular-material";
+// @import "angular-material.layouts";
+// @import "angular-material.layout-attributes";
+
+@import "app.variables.scss";
+@import "app.mixins.scss";
 
 [ng-click] {
 	cursor: pointer;
@@ -12,11 +15,12 @@
 	cursor: pointer;
 }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	display: none !important;
+}
+
 // COLOURS //
-$danger: red;
-$primary: blue;
-$warning: orange;
-$success: green;
+
 
 .danger { color: $danger }
 .primary { color: $primary }
@@ -90,7 +94,7 @@ md-sidenav {
 		display: block;
 		margin-bottom: 5px;
 		width: 100%;
-		background-image: url('./assets/img/profile-menu.png');
+		background-image: url('../img/profile-menu.png');
 		background-size: cover;
 		min-height: 172px;
 	}

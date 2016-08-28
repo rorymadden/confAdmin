@@ -1,0 +1,72 @@
+// Mixins
+
+// Bootstrap Button Variant
+
+@mixin button-variant ($color, $background, $border) {
+  color: $color;
+  background-color: $background;
+  border: 2px solid $border;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open .dropdown-toggle {
+    color: $color;
+    background-color: darken($background, 5%);
+    border-color: darken($border, 5%);
+  }
+  &:active,
+  &.active,
+  .open .dropdown-toggle {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      background-color: $background;
+      border-color: $border;
+    }
+  }
+
+  .badge {
+    color: $background;
+    background-color: $color;
+  }
+}
+
+// Background Cover Mixin
+
+@mixin background-cover() {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+// Font Mixins
+
+@mixin serif-font() {
+  font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+@mixin body-font() {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@mixin logo-font() {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-style: italic;
+  font-weight: 100;
+}
+
+@mixin heading-font() {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  // text-transform: uppercase;
+}

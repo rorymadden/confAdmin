@@ -1,6 +1,6 @@
 'use strict';
-import speakersTemplate from './speakers.html';
-import speakerFormTemplate from './speakerForm.html';
+// import speakersTemplate from './speakers.html';
+// import speakerFormTemplate from './speakerForm.html';
 
 angular.module('speakers', [])
 .config(function ($stateProvider) {
@@ -9,7 +9,8 @@ angular.module('speakers', [])
   $stateProvider
     .state('conference.speakers', {
       url: '/speakers',
-      templateUrl: speakersTemplate,
+      // templateUrl: speakersTemplate,
+      templateUrl: 'speakers/speakers.html',
       controller: 'SpeakersCtrl as speakers',
       resolve: {
         $title: function () { return 'Speakers'; },
@@ -21,7 +22,8 @@ angular.module('speakers', [])
     })
     .state('conference.speakers.new', {
       url: '/new',
-      templateUrl: speakerFormTemplate,
+      // templateUrl: speakerFormTemplate,
+      templateUrl: 'speakers/speakerForm.html',
       controller: 'SpeakerFormCtrl as speakerCtrl',
       resolve: {
         $title: function () { return 'Create a New Speaker'; },
@@ -32,7 +34,8 @@ angular.module('speakers', [])
     })
     .state('conference.speakers.speaker', {
       url: '/:speakerId',
-      templateUrl: speakerFormTemplate,
+      // templateUrl: speakerFormTemplate,
+      templateUrl: 'speakers/speakerForm.html',
       controller: 'SpeakerFormCtrl as speakerCtrl',
       resolve: {
         speaker: function (Restangular, $stateParams) {
@@ -49,7 +52,7 @@ angular.module('speakers', [])
     })
     ;
 })
-.controller('SpeakersCtrl', function (speakers, Restangular, $state, $stateParams, $mdMedia, $mdDialog, $rootScope) {
+.controller('SpeakersCtrl', function (speakers, Restangular, $state, $stateParams, $mdMedia, $mdDialog, $rootScope, imageService) {
   'ngInject';
   var self = this;
   // this.speakers = Restangular.copy(speakers);
@@ -152,12 +155,41 @@ angular.module('speakers', [])
     speaker.save();
 
   }
+
+  this.toggleImage = function (speaker, fieldName) {
+    //check if the image is ok
+    if (speaker[fieldName]) {
+      imageService.removeImage({
+        className: 'Speaker',
+        fieldName: fieldName,
+        name: speaker.first + ' ' + speaker.last,
+        object: speaker
+      });
+    } else {
+      imageService.uploadImage({
+        className: 'Speaker',
+        fieldName: fieldName,
+        alt: speaker.first + ' ' + speaker.last + ': ' + speaker.company,
+        object: speaker
+      }, function (err, imageDetails) {
+        if (err) {
+          // TODO: present error to the user
+          console.log(err);
+        }
+        else {
+          console.log(imageDetails);
+          speaker[fieldName] = imageDetails;
+          speaker.save();
+        }
+      });
+    }
+  }
 })
 
-.controller('SpeakerFormCtrl', function (speaker, Restangular, $state, $stateParams, AppConstants, $rootScope) {
+.controller('SpeakerFormCtrl', function (speaker, Restangular, $state, $stateParams, COUNTRIES, $rootScope) {
   'ngInject';
 
-  this.countries = AppConstants.COUNTRIES;
+  this.countries = COUNTRIES;
 
   var newSpeaker = true;
   this.speaker = Restangular.copy(speaker);
@@ -193,34 +225,31 @@ angular.module('speakers', [])
     }
   };
 
-  this.removeSpeaker = function () {
-    Restangular.one('conferences', $stateParams.confId).one('speakers', $stateParams.speakerId).remove().then(function (speaker) {
-      $rootScope.$emit('removeSpeaker', speaker);
-      $state.go('conference.speakers');
-    });
-  };
+  // this.removeSpeaker = function () {
+  //   Restangular.one('conferences', $stateParams.confId).one('speakers', $stateParams.speakerId).remove().then(function (speaker) {
+  //     $rootScope.$emit('removeSpeaker', speaker);
+  //     $state.go('conference.speakers');
+  //   });
+  // };
+
 })
-.filter('countryCode', function (AppConstants) {
+.filter('countryCode', function (COUNTRIES) {
   'ngInject';
 
   return function (countryCode) {
-    var country = AppConstants.COUNTRIES.filter(function (country) {
+    var country = COUNTRIES.filter(function (country) {
       return country.code === countryCode;
     });
     return country[0].country;
   };
 })
-.filter('speakerImages', function ($sce) {
+.filter('photoIcon', function ($sce) {
   'ngInject';
 
-  return function (speaker) {
-    if(!speaker) speaker = {};
-    var profileIcon = speaker.profilePic ? 'success' : '';
-    var companyIcon = speaker.companyLogo ? 'success' : '';
-    var icons = '<md-icon md-font-set="material-icons" class="material-icons ' + profileIcon + '" alt="Profile Picture">person_pin</md-icon> &nbsp;' +
-      '<md-icon md-font-set="material-icons" class="material-icons ' + companyIcon + '" alt="Company Logo">business</md-icon>';
-      // console.log(icons);
-    return $sce.trustAsHtml(icons);
+  return function (photo, alt, icon) {
+    var imageClass = photo ? 'success' : '';
+    var icon = '<md-icon md-font-set="material-icons" class="material-icons ' + imageClass + '" alt="' + alt + '">' + icon + '</md-icon>';
+    return $sce.trustAsHtml(icon);
   };
 })
 ;

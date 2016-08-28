@@ -1,5 +1,5 @@
 'use strict';
-import homeTemplate from './home.html';
+// import homeTemplate from './home.html';
 
 angular.module('home', [])
 .config(function ($stateProvider) {
@@ -8,7 +8,8 @@ angular.module('home', [])
   $stateProvider
     .state('home', {
       url: '/',
-      templateUrl: homeTemplate,
+      // templateUrl: homeTemplate,
+      templateUrl: 'home/home.html',
       controller: 'HomeCtrl as home',
       resolve: {
         $title: function () { return 'Home'; },

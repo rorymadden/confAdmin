@@ -1,33 +1,5 @@
 'use strict';
 
-// import angular from '../node_modules/angular/angular.js'
-import angular from 'angular';
-
-import ngAnimate from 'angular-animate';
-// import ngCookies from 'angular-cookies';
-import ngMessages from 'angular-messages';
-import ngSanitize from 'angular-sanitize';
-import ngMaterial from 'angular-material';
-import ngAria from 'angular-aria';
-import uiRouter from 'angular-ui-router';
-import uiRouterTitle from 'angular-ui-router-title';
-import restangular from 'restangular';
-import loadsh from 'lodash';
-import ngFileUpload from 'ng-file-upload';
-
-
-// import angular from '../node_modules/angular-markdown-directive/markdown.js'
-// import angular from '../node_modules/angular-load/angular-load.js'
-
-import home from './components/home/home.js';
-import filters from './config/app.filters.js';
-import auth from './components/auth/auth.js';
-import user from './components/user/users.js';
-import speakers from './components/speakers/speakers.js';
-// import imageMgr from './components/image/image.js';
-import conference from './components/conference/conference.js';
-import './app.scss'
-
 
 /**
  * @ngdoc overview
@@ -37,10 +9,6 @@ import './app.scss'
  *
  * Main module of the application.
  */
-
-import constants  from './config/app.constants';
-import appConfig  from './config/app.config';
-import appRun     from './config/app.run';
 
 angular
   .module('conferenceMgmtApp', [
@@ -54,21 +22,65 @@ angular
     'ui.router.title',
     'restangular',
     'ngFileUpload',
+    'templates',
+    'constants',
+    'collapse',
 
     'app.filters',
     'home',
     'user',
     'auth',
     'speakers',
-    // 'imageMgr',
-    'conference'
+    'conference',
+    'imageMgr'
   ])
 
-  .constant('AppConstants', constants)
-  .config(appConfig)
-  .run(appRun)
+  .config(function ($httpProvider, $stateProvider, API, $urlRouterProvider, RestangularProvider, $mdThemingProvider) {
+    'ngInject';
 
-  .controller('AppCtrl', function ($rootScope, $mdSidenav, $scope, userService) {
+    // allow cors requests
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    $httpProvider.interceptors.push('authInterceptor');
+
+    $mdThemingProvider.theme('default')
+     .primaryPalette('green')
+     .accentPalette('red');
+
+    RestangularProvider.setBaseUrl(API);
+    RestangularProvider.setRestangularFields({
+      id: "_id"
+    });
+
+    // For any unmatched url, redirect to /
+    $urlRouterProvider.otherwise('/');
+
+  }
+)
+  .run(function ($rootScope, $state, $window, $location, authService ,$mdSidenav) {
+      'ngInject';
+
+    // check for correct priviledges
+    $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
+      if (!authService.isAuthed() && (toState.name !== 'login' && toState.name !== 'settlement')) {
+        event.preventDefault();
+        $state.go('login');
+      }
+
+      // TODO: this errors on first load
+      $mdSidenav('left').close();
+    });
+
+    // google analytics
+    $rootScope.$on('$stateChangeSuccess',
+      function(){
+        if (!$window.ga){return;}
+        $window.ga('send', 'pageview', { page: $location.path() });
+      }
+    )
+  })
+
+  .controller('AppCtrl', function ($rootScope, $scope, userService, $mdSidenav) {
     'ngInject';
 
     var self = this;
@@ -82,6 +94,7 @@ angular
     };
   })
   ;
+angular.module('templates', []);
 //   .controller('SpeakersController', ['speakers', 'sessions', function (speakers, sessions) {
 //     this.speakers = speakers.filter(function (speaker) {
 //       return !speaker.keynote && speaker.active;

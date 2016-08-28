@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="conferenceMgmtApp"  ng-controller="AppCtrl as app">
+  <head>
+    <title ng-bind="($title || 'Home') + ' - Initiate Network'">Initiate Network</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <!-- <base href="/app/"> -->
+
+    <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.0/angular-material.css"/>
+    <link rel="stylesheet" type='text/css' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type='text/css' href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700,100italic,300italic'>
+    <link rel='stylesheet' type='text/css' href='./css/app.min.css'>
+
+  </head>
+
+  <body layout="column" ng-cloak>
+
+    <md-toolbar layout="row">
+      <md-button class="menu" ng-click="app.toggleMenu()" aria-label="Show Conference Menu" ng-if="app.conference">
+        <md-icon md-font-set="material-icons">menu</md-icon>
+      </md-button>
+
+      <conference-selector></conference-selector>
+
+      <h1 ng-if="!app.currentUser">Welcome to Initiate Network</h1>
+
+    </md-toolbar>
+
+
+
+    <div>
+
+      <md-content flex id="content" ui-view autoscroll>
+
+      </md-content>
+
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-messages.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/restangular/1.5.2/restangular.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.14.1/lodash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.0/angular-material.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.5/ng-file-upload.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/auth0/angular-jwt/master/dist/angular-jwt.js"></script>
+    <script type="text/javascript" src="https://widget.cloudinary.com/global/all.js"></script>
+
+    <!--build:js({.tmp,app}) js/vendors.js -->
+    <script src="../node_modules/angular-ui-router-title/angular-ui-router-title.js"></script>
+    <!-- <script src="../node_modules/angular-load/angular-load.js"></script> -->
+    <script src="../node_modules/angular-markdown-directive/markdown.js"></script>
+    <!--endbuild -->
+
+
+    <!--build:js({.tmp,app}) js/app.js -->
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="templates.js"></script>
+    <script type="text/javascript" src="config/app.constants.js"></script>
+    <script type="text/javascript" src="config/app.filters.js"></script>
+
+
+    <script type="text/javascript" src="directives/collapse/collapse.js"></script>
+
+
+    <script type="text/javascript" src="components/user/users.js"></script>
+    <script type="text/javascript" src="components/auth/auth.js"></script>
+    <script type="text/javascript" src="components/conference/conference.js"></script>
+    <script type="text/javascript" src="components/home/home.js"></script>
+    <script type="text/javascript" src="components/speakers/speakers.js"></script>
+    <script type="text/javascript" src="components/home/home.js"></script>
+    <script type="text/javascript" src="components/image/image.js"></script>
+    <!--endbuild -->
+
+  </body>
+</html>

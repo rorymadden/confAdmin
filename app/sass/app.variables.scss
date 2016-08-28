@@ -1,0 +1,38 @@
+// Variables
+
+$danger: red;
+$primary: blue;
+$warning: orange;
+$success: green;
+// Gray and Brand Colors for use across theme
+
+
+$black: #000;
+$white: #fff;
+
+$theme-primary:    #60BED1;
+$action-colour:    #b12a1c ;
+
+$theme-lighter:    lighten($theme-primary, 35%);
+
+
+$theme-danger:     #e74c3c;
+
+$green-base:       #84C6BA;
+$green-darker:     darken($green-base, 25.5%);
+$green-dark:       darken($green-base, 20%);
+$green:            lighten($green-base, 33.5%);
+$green-light:      lighten($green-base, 13.5%);
+$green-lighter:    lighten($green-base, 20%);
+
+
+$gray-base:        #000;
+$gray-darker:      lighten($gray-base, 13.5%); // #222
+$gray-dark:        lighten($gray-base, 20%);   // #333
+$gray:             lighten($gray-base, 33.5%); // #555
+$gray-light:       lighten($gray-base, 46.7%); // #777
+$gray-lighter:     lighten($gray-base, 93.5%); // #eee
+
+$screen-sm-min: 768px;
+$screen-md-min: 992px;
+$screen-lg-min: 1200px;
