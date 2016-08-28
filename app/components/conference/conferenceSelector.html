@@ -1,8 +1,0 @@
-<md-input-container ng-if="confSelector.user">
-  <!--<label>Conference</label>-->
-  <md-select ng-model="confSelector.conferenceId" ng-change="confSelector.goToConference()"  placeholder="Select a conference">
-    <md-option ng-repeat="conf in confSelector.conferences" value="{{conf._id}}">
-      {{conf.name}} {{conf.year}}
-    </md-option>
-  </md-select>
-</md-input-container>
