@@ -31,6 +31,7 @@ angular
     'user',
     'auth',
     'speakers',
+    'sponsors',
     'conference',
     'imageMgr'
   ])
@@ -613,12 +614,14 @@ angular.module('templates').run(['$templateCache', function($templateCache) {$te
 $templateCache.put('conference/conferenceSelector.html','<md-input-container ng-if="confSelector.user">\n  <!--<label>Conference</label>-->\n  <md-select ng-model="confSelector.conferenceId" ng-change="confSelector.goToConference()"  placeholder="Select a conference">\n    <md-option ng-repeat="conf in confSelector.conferences" value="{{conf._id}}">\n      {{conf.name}} {{conf.year}}\n    </md-option>\n  </md-select>\n</md-input-container>');
 $templateCache.put('home/home.html','<h1> Welcome to Initiate Network</h1>\n\n<h2>Select a Conference above to get started</h2>\n<md-button class="md-raised md-primary" ng-click="home.showCreateForm()" access="admin">Create a new Conference</md-button>\n<!--<md-icon aria-label="Create a new Conference" class="material-icons md-24 add-conference" ng-click="home.showCreateForm()">-->\n<!--  add box-->\n<!--</md-icon>-->\n\n<div layout="column" ng-cloak class="md-inline-form" ng-if="home.showCreate">\n  <md-content layout-padding>\n    <form name="newConference" ng-submit="home.createConference()" >\n      <md-input-container class="md-block">\n        <label>Conference Name</label>\n        <input ng-model="home.newConference.name" required>\n        <div ng-messages="home.newConference.name.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A conference name is required.\n          </div>\n        </div>\n      </md-input-container>\n      <md-input-container class="md-block">\n        <label>Year</label>\n        <input ng-model="home.newConference.year" ng-pattern="/^[0-9]{4}$/" required maxlength="4">\n        <div ng-messages="home.newConference.year.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Please enter a four digit year.\n          </div>\n        </div>\n      </md-input-container>\n       <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="home.newConference.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="home.newConference.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n       <md-button class="md-raised md-primary" type="submit">Create</md-button>\n       <md-button class="md-raised md-danger" ng-click="home.hideCreateForm()">Cancel</md-button>\n    </form>\n  </md-content>\n</div>\n');
 $templateCache.put('image/imageUpload.html','<md-dialog aria-label="UploadImage"  ng-cloak>\n  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">\n    <md-toolbar>\n      <div class="md-toolbar-tools">\n        <h2>Upload Image</h2>\n        <span flex></span>\n        <md-button class="md-icon-button" ng-click="cancel()">\n          <md-icon md-font-set="material-icons">close</md-icon>\n        </md-button>\n      </div>\n    </md-toolbar>\n    <md-dialog-content>\n      <div class="md-dialog-content">\n        <label>IMAGE NAME FROM CALL</label>\n        <div class="button" ngf-select ng-model="file" name="file" ngf-pattern="\'image/*\'"\n          ngf-accept="\'image/*\'" ngf-max-size="2MB" ngf-min-height="300" ngf-max-height="300"\n          ngf-min-width="300" ngf-max-width="300">Select</div>\n      </div>\n    </md-dialog-content>\n    <md-dialog-actions layout="row">\n      <span flex></span>\n      <md-button > Save </md-button>\n    </md-dialog-actions>\n  </form>\n</md-dialog>\n');
-$templateCache.put('speakers/speakerForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Speaker Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.speakers">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>First Name</label>\n          <input ng-model="speakerCtrl.speaker.first" required>\n          <div ng-messages="speakerCtrl.speaker.first.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A first name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Last Name</label>\n          <input ng-model="speakerCtrl.speaker.last" required>\n          <div ng-messages="speakerCtrl.speaker.last.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A last name is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="speakerCtrl.speaker.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Title</label>\n          <input ng-model="speakerCtrl.speaker.jobTitle" required>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Company</label>\n          <input ng-model="speakerCtrl.speaker.company" required>\n          <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A company is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n\n      <md-input-container class="md-block">\n        <label>Country</label>\n        <md-select ng-model="speakerCtrl.speaker.country" required>\n          <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">\n            {{country.country}}\n          </md-option>\n        </md-select>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus maxlength="150" rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="speakerCtrl.speaker.social.twitter">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="speakerCtrl.speaker.social.linkedIn">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="speakerCtrl.speaker.social.instagram">\n        </md-input-container>\n      </div>\n      <div layout-gt-sm="row">\n        <md-switch ng-model="speakerCtrl.speaker.keynote" aria-label="Keynote" class="md-primary" >\n          Keynote\n        </md-switch>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.speakers">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
-$templateCache.put('speakers/speakers.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Speakers</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="speakers.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ speakers.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="speakers.activeFlag | booleanFlag" ng-click="speakers.toggleActive()"></span>\n      <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="speakerList">\n      <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="speakers.query.order">\n        <tr md-row>\n          <th md-column><span>First</span></th>\n          <th md-column><span>Last</span></th>\n          <th md-column><span>Title</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column><span>Company</span></th>\n          <th md-column><span>Country</span></th>\n          <th md-column>Social</th>\n          <th md-column>Keynote</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers | activeFlag:speakers.activeFlag | orderBy: \'order\'">\n          <td md-cell>{{speaker.first}}</td>\n          <td md-cell>{{speaker.last}}</td>\n          <td md-cell>{{speaker.jobTitle}}</td>\n          <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>\n          <td md-cell>{{speaker.company}}</td>\n          <td md-cell>{{speaker.country | countryCode}}</td>\n          <td md-cell ng-bind-html="speaker.social | socialFlag"></td>\n          <td md-cell ng-bind-html="speaker.keynote | booleanFlag:true"></td>\n          <td md-cell><input type="number" ng-model="speaker.order" ng-change="speakers.saveSpeaker(speaker)"></td>\n          <td md-cell>\n            <a ui-sref="conference.speakers.speaker({speakerId: speaker._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="speakers.removeSpeaker($event, speaker)" ng-show="speaker.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="speakers.reactivateSpeaker(speaker)" ng-show="!speaker.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="speaker.published | booleanFlag" ng-click="speakers.confirmPublication($event, speaker)"></td>\n          <td md-cell>\n            <span ng-bind-html="speaker.profilePic | photoIcon:\'Profile Pic\':\'person_pin\'" ng-click="speakers.toggleImage(speaker, \'profilePic\')"></span>\n            <span ng-bind-html="speaker.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="speakers.toggleImage(speaker, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n\n  <!-- <md-table-container>\n    <table md-table md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" ng-model="selected" md-progress="promise">\n      <thead ng-if="!options.decapitate" md-head md-order="query.order" md-on-reorder="logOrder">\n        <tr md-row>\n          <th md-column md-order-by="name"><span>Dessert (100g serving)</span></th>\n          <th md-column md-order-by="type"><span>Type</span></th>\n          <th md-column md-numeric md-order-by="calories.value" md-desc><span>Calories</span></th>\n          <th md-column md-numeric md-order-by="fat.value"><span>Fat (g)</span></th>\n          <th md-column md-numeric md-order-by="carbs.value"><span>Carbs (g)</span></th>\n          <th md-column md-numeric md-order-by="protein.value"><span>Protein (g)</span></th>\n          <th md-column md-numeric md-order-by="sodium.value" hide-gt-xs show-gt-md><span>Sodium (mg)</span></th>\n          <th md-column md-numeric md-order-by="calcium.value" hide-gt-xs show-gt-lg><span>Calcium (%)</span></th>\n          <th md-column md-numeric md-order-by="iron.value" hide-gt-xs show-gt-lg><span>Iron (%)</span></th>\n          <th md-column md-order-by="comment">\n            <md-icon>comments</md-icon>\n            <span>Comments</span>\n          </th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="dessert" md-on-select="logItem" md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">\n          <td md-cell>{{dessert.name}}</td>\n          <td md-cell>\n            <md-select ng-model="dessert.type" placeholder="Other">\n              <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>\n            </md-select>\n          </td>\n          <td md-cell>{{dessert.calories.value}}</td>\n          <td md-cell>{{dessert.fat.value | number: 2}}</td>\n          <td md-cell>{{dessert.carbs.value}}</td>\n          <td md-cell>{{dessert.protein.value | number: 2}}</td>\n          <td md-cell hide-gt-xs show-gt-md>{{dessert.sodium.value}}</td>\n          <td md-cell hide-gt-xs show-gt-lg>{{dessert.calcium.value}}%</td>\n          <td md-cell hide-gt-xs show-gt-lg>{{dessert.iron.value}}%</td>\n          <td md-cell ng-click="editComment($event, dessert)" ng-class="{\'md-placeholder\': !dessert.comment}">\n            {{dessert.comment || \'Add a comment\'}}\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container> -->\n\n  <md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>\n\n  <!--\n  <td><i class="glyphicon" ng-class="{\'glyphicon-ok\': speaker.linkedIn, \'glyphicon-remove\': !speaker.linkedIn}"></i></td>\n  <td><i class="glyphicon" ng-class="{\'glyphicon-ok\': speaker.twitter, \'glyphicon-remove\': !speaker.twitter}"></i></td>\n  <td><button class="btn btn-primary" ng-click="adminSpeakers.addSpeaker(speaker)"><i class="glyphicon glyphicon-pencil"></button></td>\n  <td><button class="btn" ng-class="{\'btn-danger\': speaker.active, \'btn-default\': !speaker.active}" ng-click="adminSpeakers.toggleSpeaker(speaker)"><i class="glyphicon" ng-class="{\'glyphicon-remove\': speaker.active, \'glyphicon-ok\': !speaker.active}"></button></td> -->\n\n</div>\n');
+$templateCache.put('speakers/speakerForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Speaker Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.speakers">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>First Name</label>\n          <input ng-model="speakerCtrl.speaker.first" required>\n          <div ng-messages="speakerCtrl.speaker.first.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A first name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Last Name</label>\n          <input ng-model="speakerCtrl.speaker.last" required>\n          <div ng-messages="speakerCtrl.speaker.last.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A last name is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="speakerCtrl.speaker.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Title</label>\n          <input ng-model="speakerCtrl.speaker.jobTitle" required>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Company</label>\n          <input ng-model="speakerCtrl.speaker.company" required>\n          <div ng-messages="speakerCtrl.speaker.company.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A company is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n\n      <md-input-container class="md-block">\n        <label>Country</label>\n        <md-select ng-model="speakerCtrl.speaker.country" required>\n          <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">\n            {{country.country}}\n          </md-option>\n        </md-select>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="speakerCtrl.speaker.social.twitter">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="speakerCtrl.speaker.social.linkedIn">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="speakerCtrl.speaker.social.instagram">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="speakerCtrl.speaker.social.github">\n        </md-input-container>\n      </div>\n      <div layout-gt-sm="row">\n        <md-switch ng-model="speakerCtrl.speaker.keynote" aria-label="Keynote" class="md-primary" >\n          Keynote\n        </md-switch>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.speakers">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
+$templateCache.put('speakers/speakers.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Speakers</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="speakers.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ speakers.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="speakers.activeFlag | booleanFlag" ng-click="speakers.toggleActive()"></span>\n      <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="speakerList">\n      <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="speakers.query.order">\n        <tr md-row>\n          <th md-column><span>First</span></th>\n          <th md-column><span>Last</span></th>\n          <th md-column><span>Title</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column><span>Company</span></th>\n          <th md-column><span>Country</span></th>\n          <th md-column>Social</th>\n          <th md-column>Keynote</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers | activeFlag:speakers.activeFlag | orderBy: \'order\'">\n          <td md-cell>{{speaker.first}}</td>\n          <td md-cell>{{speaker.last}}</td>\n          <td md-cell>{{speaker.jobTitle}}</td>\n          <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>\n          <td md-cell>{{speaker.company}}</td>\n          <td md-cell>{{speaker.country | countryCode}}</td>\n          <td md-cell ng-bind-html="speaker.social | socialFlag"></td>\n          <td md-cell ng-bind-html="speaker.keynote | booleanFlag:true"></td>\n          <td md-cell><input type="number" ng-model="speaker.order" ng-change="speakers.saveSpeaker(speaker)"></td>\n          <td md-cell>\n            <a ui-sref="conference.speakers.speaker({speakerId: speaker._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="speakers.removeSpeaker($event, speaker)" ng-show="speaker.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="speakers.reactivateSpeaker(speaker)" ng-show="!speaker.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="speaker.published | booleanFlag" ng-click="speakers.confirmPublication($event, speaker)"></td>\n          <td md-cell>\n            <span ng-bind-html="speaker.profilePic | photoIcon:\'Profile Pic\':\'person_pin\'" ng-click="speakers.toggleImage(speaker, \'profilePic\')"></span>\n            <span ng-bind-html="speaker.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="speakers.toggleImage(speaker, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
+$templateCache.put('sponsors/sponsorForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Sponsor Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.sponsors">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="sponsorCtrl.sponsorForm" ng-submit="sponsorCtrl.saveSponsor()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="sponsorCtrl.sponsor.name" required>\n          <div ng-messages="sponsorCtrl.sponsor.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Level</label>\n          <input type="number" ng-model="sponsorCtrl.sponsor.level" required>\n          <div ng-messages="sponsorCtrl.sponsor.level.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A level is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Url</label>\n        <input ng-model="sponsorCtrl.sponsor.url" required>\n        <div ng-messages="sponsorCtrl.sponsor.url.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A url is required.\n          </div>\n        </div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="sponsorCtrl.sponsor.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="sponsorCtrl.sponsor.social.twitter">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="sponsorCtrl.sponsor.social.linkedIn">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="sponsorCtrl.sponsor.social.instagram">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="sponsorCtrl.sponsor.social.github">\n        </md-input-container>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.sponsors">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
+$templateCache.put('sponsors/sponsors.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Sponsors</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="sponsors.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ sponsors.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="sponsors.activeFlag | booleanFlag" ng-click="sponsors.toggleActive()"></span>\n      <a ui-sref="conference.sponsors.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="sponsorList">\n      <!-- <thead md-head md-order="sponsors.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="sponsors.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Level</span></th>\n          <th md-column><span>Url</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column>Social</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="sponsor" md-select-id="_id" md-auto-select ng-repeat="sponsor in sponsors.sponsors | activeFlag:sponsors.activeFlag | orderBy: [\'level\',\'order\']">\n          <td md-cell>{{sponsor.name}}</td>\n          <td md-cell>{{sponsor.level}}</td>\n          <td md-cell>{{sponsor.url}}</td>\n          <td md-cell>{{sponsor.bio | limitTo: 15}}<span ng-if="sponsor.bio && sponsor.bio.length > 15">...</span></td>\n          <td md-cell ng-bind-html="sponsor.social | socialFlag"></td>\n          <td md-cell><input type="number" ng-model="sponsor.order" ng-change="sponsors.saveSponsor(sponsor)"></td>\n          <td md-cell>\n            <a ui-sref="conference.sponsors.sponsor({sponsorId: sponsor._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="sponsors.removeSponsor($event, sponsor)" ng-show="sponsor.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="sponsors.reactivateSponsor(sponsor)" ng-show="!sponsor.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="sponsor.published | booleanFlag" ng-click="sponsors.confirmPublication($event, sponsor)"></td>\n          <td md-cell>\n            <span ng-bind-html="sponsor.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="sponsors.toggleImage(sponsor, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="sponsors.query.limit" md-limit-options="[30, 50, 100]" md-page="sponsors.query.page" md-total="{{sponsors.sponsors.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
 $templateCache.put('user/login.html','\n<md-button class="md-raised" ng-href={{login.link}}>Login</md-button>\n');
 $templateCache.put('user/userWidget.html','<div class="profile-menu">\n  <div ng-click="userWidget.toggleMenu()" class="profile-details">\n    <div class="profile-pic">\n\n      <!--<img ng-src="{{userWidget.user.image}}" class="md-avatar" alt="{{userWidget.user.name}}" />-->\n      <!-- <img src="./img/svg/avatar-1.svg" alt="{{userWidget.user.name}}" /> -->\n    </div>\n    <div class="profile-info" >\n      {{userWidget.user.name}} <md-icon md-font-set="material-icons" ng-show="!userWidget.showMenu">keyboard_arrow_down</md-icon> <md-icon md-font-set="material-icons" ng-show="userWidget.showMenu">keyboard_arrow_up</md-icon>\n    </div>\n  </div>\n  <md-list ng-cloak ng-show="userWidget.showMenu" class="main-menu">\n    <md-list-item ui-sref="profile">\n      <md-icon md-font-set="material-icons">person</md-icon> View Profile\n    </md-list-item>\n    <md-list-item ui-sref="logout">\n      <md-icon md-font-set="material-icons">exit_to_app</md-icon> Logout\n    </md-list-item>\n\n    <md-divider></md-divider>\n  </md-list>\n</div>\n');}]);
 
-// var API_URL = 'http://localhost:8080';
+// var API_URL = 'http://localhost:3000';
 // var APP_URL = 'http://localhost:8080/app';
 var API_URL = 'https://conf.initiate.network';
 var APP_URL = 'http://admin.initiate.network';
@@ -1453,7 +1456,6 @@ angular.module('speakers', [])
           console.log(err);
         }
         else {
-          console.log(imageDetails);
           speaker[fieldName] = imageDetails;
           speaker.save();
         }
@@ -1567,10 +1569,244 @@ angular.module('imageMgr', [])
 
     removeImage: function (details) {
       // alert the user
-      if($window.confirm('Are you sure you want to delete ' + details.name + '\'s picture?')){
+      if($window.confirm('Are you sure you want to delete ' + details.name + '\'s ' + details.filedName + '?')){
         details.object[details.fieldName] = '';
         details.object.save();
       }
     }
   };
 });
+
+'use strict';
+
+angular.module('sponsors', [])
+.config(function ($stateProvider) {
+  'ngInject';
+
+  $stateProvider
+    .state('conference.sponsors', {
+      url: '/sponsors',
+      // templateUrl: sponsorsTemplate,
+      templateUrl: 'sponsors/sponsors.html',
+      controller: 'SponsorsCtrl as sponsors',
+      resolve: {
+        $title: function () { return 'Sponsors'; },
+        sponsors: function (Restangular, $stateParams) {
+          'ngInject';
+          return Restangular.one('conferences', $stateParams.confId).all('sponsors').getList();
+        }
+      }
+    })
+    .state('conference.sponsors.new', {
+      url: '/new',
+      // templateUrl: sponsorFormTemplate,
+      templateUrl: 'sponsors/sponsorForm.html',
+      controller: 'SponsorFormCtrl as sponsorCtrl',
+      resolve: {
+        $title: function () { return 'Create a New Sponsor'; },
+        sponsor: function () { return {} }
+      },
+
+
+    })
+    .state('conference.sponsors.sponsor', {
+      url: '/:sponsorId',
+      // templateUrl: sponsorFormTemplate,
+      templateUrl: 'sponsors/sponsorForm.html',
+      controller: 'SponsorFormCtrl as sponsorCtrl',
+      resolve: {
+        sponsor: function (Restangular, $stateParams) {
+          'ngInject';
+          return Restangular.one('conferences', $stateParams.confId).one('sponsors', $stateParams.sponsorId).get(function (sponsor) {
+            return sponsor;
+          });
+
+
+        },
+        $title: function () { return 'Edit Sponsor'; },
+      }
+    })
+    ;
+})
+.controller('SponsorsCtrl', function (sponsors, Restangular, $state, $stateParams, $mdMedia, $mdDialog, $rootScope, imageService) {
+  'ngInject';
+  var self = this;
+  // this.sponsors = Restangular.copy(sponsors);
+  this.sponsors = sponsors;
+
+  $rootScope.$on('sponsorChange', function (event, sponsor) {
+    var newSponsor = true;
+    self.sponsors.map(function (s, index) {
+      if(s._id === sponsor._id) {
+        newSponsor = false;
+        self.sponsors.splice(index, 1, sponsor);
+      }
+    });
+    if (newSponsor) self.sponsors.push(sponsor);
+  });
+  $rootScope.$on('removedSponsor', function (event, sponsor) {
+    self.sponsors = self.sponsors.filter(function (s) {
+      if(s._id !== sponsor._id) return true;
+    });
+  });
+
+
+  // hide inactive by default
+  this.activeFlag = true;
+  this.toggleActive = function () {
+    this.activeFlag = !this.activeFlag;
+  }
+
+  this.query = {
+    order: 'last',
+    limit: 30,
+    page: 1
+  };
+
+  this.confirmPublication = function(ev, sponsor) {
+    var action = sponsor.published ? 'un-publish' : 'publication';
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title('Confirm ' + action)
+          .textContent('Confirm ' + action + ' of ' + sponsor.name)
+          .ariaLabel('Sponsor ' + action)
+          .targetEvent(ev)
+          .ok('Yes')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+      sponsor.published = !sponsor.published;
+      if (!sponsor.published) {
+        sponsor.one('unpublish').get().then(function () {
+
+        }, function (err) {
+          sponsor.published = !sponsor.published;
+          $mdDialog.show(
+             $mdDialog.alert()
+              .parent(angular.element(document.querySelector('#sponsorList')))
+              .clickOutsideToClose(true)
+              .title('Cannot Unpublish')
+              .textContent(err)
+              .ariaLabel('Unpublish Error')
+              .ok('Got it!')
+              .targetEvent(ev)
+            );
+        });
+      }
+      else {
+        sponsor.save();
+      }
+    });
+  };
+
+  this.removeSponsor = function(ev, sponsor) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title('Confirm De-activation')
+          .textContent('Confirm de-activation of ' + sponsor.name)
+          .ariaLabel('Sponsor De-activation')
+          .targetEvent(ev)
+          .ok('Yes')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+      sponsor.remove().then(function () {
+        //update the active flag against the sponsor
+        sponsor.active = false;
+      }, function (err) {
+        $mdDialog.show(
+           $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#sponsorList')))
+            .clickOutsideToClose(true)
+            .title('Cannot De-activate')
+            .textContent(err)
+            .ariaLabel('Unpublish Error')
+            .ok('Got it!')
+            .targetEvent(ev)
+          );
+      });
+    });
+  };
+
+  this.reactivateSponsor = function (sponsor) {
+    sponsor.active = true;
+    sponsor.save();
+
+  }
+
+  this.saveSponsor = function (sponsor) {
+    sponsor.put().then(function (sponsor) {
+      $rootScope.$emit('sponsorChange', sponsor);
+      $state.go('conference.sponsors');
+    });
+  };;
+
+  this.toggleImage = function (sponsor, fieldName) {
+    //check if the image is ok
+    if (sponsor[fieldName]) {
+      imageService.removeImage({
+        className: 'Sponsor',
+        fieldName: fieldName,
+        name: sponsor.name,
+        object: sponsor
+      });
+    } else {
+      imageService.uploadImage({
+        className: 'Sponsor',
+        fieldName: fieldName,
+        alt: sponsor.name,
+        object: sponsor
+      }, function (err, imageDetails) {
+        if (err) {
+          // TODO: present error to the user
+          console.log(err);
+        }
+        else {
+          sponsor[fieldName] = imageDetails;
+          sponsor.save();
+        }
+      });
+    }
+  }
+})
+
+.controller('SponsorFormCtrl', function (sponsor, Restangular, $state, $stateParams, $rootScope) {
+  'ngInject';
+
+  var newSponsor = true;
+  this.sponsor = Restangular.copy(sponsor);
+
+  // same controller used for new sponsors and editing sponsors
+  if (this.sponsor.name) newSponsor = false;
+  this.saveSponsor = function () {
+    if (newSponsor) {
+      Restangular.one('conferences', $stateParams.confId).all('sponsors').post(this.sponsor).then(function (sponsor) {
+        // push the new sponsor into the parent sponsors list.
+        $rootScope.$emit('sponsorChange', sponsor);
+        $state.go('conference.sponsors');
+      });
+    }
+    else {
+      this.sponsor.put().then(function (sponsor) {
+        $rootScope.$emit('sponsorChange', sponsor);
+        $state.go('conference.sponsors');
+      });
+    }
+  };
+
+  // this.removeSponsor = function () {
+  //   Restangular.one('conferences', $stateParams.confId).one('sponsors', $stateParams.sponsorId).remove().then(function (sponsor) {
+  //     $rootScope.$emit('removeSponsor', sponsor);
+  //     $state.go('conference.sponsors');
+  //   });
+  // };
+
+})
+.filter('photoIcon', function ($sce) {
+  'ngInject';
+
+  return function (photo, alt, icon) {
+    var imageClass = photo ? 'success' : '';
+    var icon = '<md-icon md-font-set="material-icons" class="material-icons ' + imageClass + '" alt="' + alt + '">' + icon + '</md-icon>';
+    return $sce.trustAsHtml(icon);
+  };
+})
+;
