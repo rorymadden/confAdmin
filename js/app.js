@@ -33,6 +33,7 @@ angular
     'speakers',
     'sponsors',
     'sessions',
+    'agendas',
     // 'streams',
     'conference',
     'venues',
@@ -613,7 +614,11 @@ angular.module('templates', []);
 //     };
 //   });
 
-angular.module('templates').run(['$templateCache', function($templateCache) {$templateCache.put('conference/conference.html','<md-sidenav class="md-sidenav-left" md-component-id="left"  md-disable-backdrop  md-whiteframe="4">\n  <user-widget user="conf.user"></user-widget>\n\n  <md-list>\n    <md-list-item ui-sref="conference({conference: app.conference})" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">dashboard</md-icon>\n        Dashboard\n    </md-list-item>\n\n    <!-- <md-list-item ui-sref="conference.streams" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">rowing</md-icon>\n          Streams\n    </md-list-item> -->\n\n    <md-list-item ui-sref="conference.speakers" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">people</md-icon>\n          Speakers\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.sponsors" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">repeat</md-icon>\n          Sponsors\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.agendas" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">today</md-icon>\n          Agendas\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.sessions" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">airplay</md-icon>\n          Sessions\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.media" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">signal_wifi_4_bar</md-icon>\n          Media\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.details" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">assignment</md-icon>\n          Conference Details\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.venues" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">account_balance</md-icon>\n          Venues\n    </md-list-item>\n\n  </md-list>\n</md-sidenav>\n\n<md-content flex layout-padding>\n\n  <div ui-view class="contentView">\n    <h1>Dashboard</h1>\n    <p>This is where the magic will happen!</p>\n\n  </div>\n</md-content>\n');
+angular.module('templates').run(['$templateCache', function($templateCache) {$templateCache.put('agendas/agendaCreateForm.html','<md-dialog aria-label="Speakers">\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Add Speakers</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ng-click="cancel()">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="agendaForm" submit="addAgenda()">\n    <md-dialog-content>\n      <md-content layout-padding="">\n        <md-input-container class="md-block">\n          <label>Name</label>\n          <input ng-model="newAgenda.name" required name="name">\n          <div ng-messages="agendaForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n      </md-content>\n    </md-dialog-content>\n    <md-dialog-actions layout="row">\n      <span flex></span>\n      <md-button ng-click="addAgenda()"> Save </md-button>\n    </md-dialog-actions>\n  </form>\n</md-dialog>\n');
+$templateCache.put('agendas/agendaForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Agenda Sesssion Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.agendas">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="agendaCtrl.agendaForm" ng-submit="agendaCtrl.saveAgenda()">\n    <md-content layout-padding="">\n      <md-input-container class="md-block" flex-gt-sm>\n        <label>Name</label>\n        <input ng-model="agendaCtrl.agenda.name" required name="name">\n        <div ng-messages="agendaCtrl.agendaForm.name.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A name is required.\n          </div>\n        </div>\n      </md-input-container>\n\n      <!-- Speakers list -->\n      <md-toolbar class="md-table-toolbar md-accent md-hue-1 shortToolbar">\n        <div class="md-toolbar-tools">\n          <span>Sessions</span>\n          <span flex></span>\n          <md-icon md-font-set="material-icons" ng-click="agendaCtrl.openAgendaSessionDialog($event, {})">add_box</md-icon>\n        </div>\n      </md-toolbar>\n      <md-table-container>\n        <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n        <table md-table md-row-select multiple ng-model="selected" id="sessionList">\n          <!-- <thead md-head md-order="agendas.order" md-on-reorder="getDesserts"> -->\n          <thead md-head>\n            <tr md-row>\n              <th md-column>Name</th>\n              <th md-column>Type</th>\n              <th md-column>Start Time</th>\n              <th md-column>Duration (mins)</th>\n              <th md-column>Speakers</th>\n              <th md-column class="th-edit">Remove</th>\n            </tr>\n          </thead>\n          <tbody md-body>\n            <tr md-row md-select="session" md-select-id="_id" md-auto-select ng-repeat="agendaSession in agendaCtrl.agenda.sessions | sessionDetails:agendaCtrl.sessions">\n              <td md-cell>{{agendaSession.session.name}}</td>\n              <td md-cell>{{agendaSession.sessionType}}</td>\n              <td md-cell>{{agendaSession.start | date:\'hh:mm\'}}</td>\n              <td md-cell>{{agendaSession.duration}}</td>\n              <td md-cell>\n                <ul>\n                  <li ng-repeat="speaker in agendaSession.session.speakerIds | speakerDetails:agendaCtrl.speakers">\n                    {{speaker.first}} {{speaker.last}}, {{speaker.company}}\n                  </li>\n                </ul>\n              </td>\n              <td md-cell>\n                <a ng-click="agendaCtrl.openAgendaSessionDialog($event, agendaSession)"><md-icon md-font-set="material-icons">edit</md-icon></a>\n                <a ng-click="agendaCtrl.removeSession($event, agendaSession)"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </md-table-container>\n    </md-content>\n\n\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.agendas">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
+$templateCache.put('agendas/agendaSessionForm.html','<md-dialog aria-label="Speakers">\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Agenda Session</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ng-click="cancel()">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="agendaForm" submit="saveAgendaSession()">\n    <md-dialog-content>\n      <md-content layout-padding="">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Type</label>\n          <md-select ng-model="agendaSession.sessionType" required name="type">\n            <md-option ng-repeat="type in types" value="{{type}}">\n              {{type}}\n            </md-option>\n          </md-select>\n          <div ng-messages="agendaForm.type.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A type is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block">\n          <label>Start</label>\n          <input ng-model="agendaSession.start" required name="start" type="time">\n          <div ng-messages="agendaForm.start.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A start time is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block">\n          <label>Duration</label>\n          <input ng-model="agendaSession.duration" required name="duration" type="number">\n          <div ng-messages="agendaForm.duration.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A duration is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block">\n          <label>Session</label>\n          <md-select ng-model="agendaSession.sessionId" aria-label="session">\n            <md-option ng-repeat="session in sessions" value="{{session._id}}">\n              {{session.name}}\n            </md-option>\n          </md-select>\n        </md-input-container>\n      </md-content>\n    </md-dialog-content>\n    <md-dialog-actions layout="row">\n      <span flex></span>\n      <md-button ng-click="saveAgendaSession()"> Save </md-button>\n    </md-dialog-actions>\n  </form>\n</md-dialog>\n');
+$templateCache.put('agendas/agendas.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Agendas</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="agendas.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ agendas.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="agendas.activeFlag | booleanFlag" ng-click="agendas.toggleActive()"></span>\n      <md-icon md-font-set="material-icons" ng-click="agendas.openAgendaDialog()">add_box</md-icon>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="agendaList">\n      <!-- <thead md-head md-order="agendas.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="agendas.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column>Sessions</th>\n          <th md-column class="th-edit">Primary</th>\n          <th md-column class="th-edit">Edit</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="agenda" md-select-id="_id" md-auto-select ng-repeat="agenda in agendas.agendas | activeFlag:agendas.activeFlag | orderBy: \'order\'">\n          <td md-cell>{{agenda.name}}</td>\n          <td md-cell>{{agenda.sessionIds.length}}</td>\n          <td md-cell ng-bind-html="agenda.primary | booleanFlag" ng-click="agendas.confirmPrimary($event, agenda)"></td>\n          <td md-cell>\n            <a ui-sref="conference.agendas.agenda({agendaId: agenda._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="agendas.removeAgenda($event, agenda)" ng-show="agenda.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="agendas.reactivateAgenda(agenda)" ng-show="!agenda.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="agendas.query.limit" md-limit-options="[30, 50, 100]" md-page="agendas.query.page" md-total="{{agendas.agendas.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
+$templateCache.put('conference/conference.html','<md-sidenav class="md-sidenav-left" md-component-id="left"  md-disable-backdrop  md-whiteframe="4">\n  <user-widget user="conf.user"></user-widget>\n\n  <md-list>\n    <md-list-item ui-sref="conference({conference: app.conference})" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">dashboard</md-icon>\n        Dashboard\n    </md-list-item>\n\n    <!-- <md-list-item ui-sref="conference.streams" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">rowing</md-icon>\n          Streams\n    </md-list-item> -->\n\n    <md-list-item ui-sref="conference.speakers" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">people</md-icon>\n          Speakers\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.sponsors" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">repeat</md-icon>\n          Sponsors\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.agendas" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">today</md-icon>\n          Agendas\n    </md-list-item>\n\n\n    <md-list-item ui-sref="conference.sessions" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">airplay</md-icon>\n          Sessions\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.media" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">signal_wifi_4_bar</md-icon>\n          Media\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.details" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">assignment</md-icon>\n          Conference Details\n    </md-list-item>\n\n    <md-list-item ui-sref="conference.venues" ui-sref-active="active">\n        <md-icon md-font-set="material-icons">account_balance</md-icon>\n          Venues\n    </md-list-item>\n\n  </md-list>\n</md-sidenav>\n\n<md-content flex layout-padding>\n\n  <div ui-view class="contentView">\n    <h1>Dashboard</h1>\n    <p>This is where the magic will happen!</p>\n\n  </div>\n</md-content>\n');
 $templateCache.put('conference/conferenceForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Conference Details</h2>\n      <span flex></span>\n      <!-- <md-button class="md-icon-button" ui-sref="conference.details">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button> -->\n    </div>\n  </md-toolbar>\n  <form name="conferenceCtrl.conferenceForm" ng-submit="conferenceCtrl.saveConference()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="conferenceCtrl.conference.name" required name="name">\n          <div ng-messages="conferenceCtrl.conferenceForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Year</label>\n          <input ng-model="conferenceCtrl.conference.year" required name="year">\n          <div ng-messages="conferenceCtrl.conferenceForm.year.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A year is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Contact Email</label>\n        <input required type="email" name="email" ng-model="conferenceCtrl.conference.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div class="hint">This is where media and contact requests go!</div>\n        <div ng-messages="conferenceCtrl.conferenceForm.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Blog Url</label>\n        <input name="blogUrl" ng-model="conferenceCtrl.conference.blogUrl"/>\n        <div class="hint">https://latest.uxdxconf.com/ghost/api/v0.1/posts/?limit=3&client_id=ghost-frontend&client_secret=35e2d4887693</div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>About</label>\n        <textarea ng-model="conferenceCtrl.conference.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n\n      <!-- <md-input-container class="md-block">\n        <label>Venue</label>\n        <md-select ng-model="conferenceCtrl.conference.venueId">\n          <md-option ng-repeat="venue in conferenceCtrl.venues" value="{{venue._id}}">\n            {{venue.name}}\n          </md-option>\n        </md-select>\n      </md-input-container> -->\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <!-- <md-button class="md-raised md-danger" ui-sref="conference">Cancel</md-button> -->\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
 $templateCache.put('conference/conferenceSelector.html','<md-input-container ng-if="confSelector.user">\n  <!--<label>Conference</label>-->\n  <md-select ng-model="confSelector.conferenceId" ng-change="confSelector.goToConference()"  placeholder="Select a conference">\n    <md-option ng-repeat="conf in confSelector.conferences" value="{{conf._id}}">\n      {{conf.name}} {{conf.year}}\n    </md-option>\n  </md-select>\n</md-input-container>');
 $templateCache.put('home/home.html','<h1> Welcome to Initiate Network</h1>\n\n<h2>Select a Conference above to get started</h2>\n<md-button class="md-raised md-primary" ng-click="home.showCreateForm()" access="admin">Create a new Conference</md-button>\n<!--<md-icon aria-label="Create a new Conference" class="material-icons md-24 add-conference" ng-click="home.showCreateForm()">-->\n<!--  add box-->\n<!--</md-icon>-->\n\n<div layout="column" ng-cloak class="md-inline-form" ng-if="home.showCreate">\n  <md-content layout-padding>\n    <form name="newConference" ng-submit="home.createConference()" >\n      <md-input-container class="md-block">\n        <label>Conference Name</label>\n        <input ng-model="home.newConference.name" required>\n        <div ng-messages="home.newConference.name.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A conference name is required.\n          </div>\n        </div>\n      </md-input-container>\n      <md-input-container class="md-block">\n        <label>Year</label>\n        <input ng-model="home.newConference.year" ng-pattern="/^[0-9]{4}$/" required maxlength="4">\n        <div ng-messages="home.newConference.year.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Please enter a four digit year.\n          </div>\n        </div>\n      </md-input-container>\n       <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="home.newConference.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="home.newConference.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n       <md-button class="md-raised md-primary" type="submit">Create</md-button>\n       <md-button class="md-raised md-danger" ng-click="home.hideCreateForm()">Cancel</md-button>\n    </form>\n  </md-content>\n</div>\n');
@@ -621,14 +626,14 @@ $templateCache.put('image/imageUpload.html','<md-dialog aria-label="UploadImage"
 $templateCache.put('media/speakerForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Speaker Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.speakers">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>First Name</label>\n          <input ng-model="speakerCtrl.speaker.first" required name="first">\n          <div ng-messages="speakerCtrl.speakerForm.first.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A first name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Last Name</label>\n          <input ng-model="speakerCtrl.speaker.last" required name="last">\n          <div ng-messages="speakerCtrl.speakerForm.last.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A last name is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="speakerCtrl.speakerForm.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Title</label>\n          <input ng-model="speakerCtrl.speaker.jobTitle" required name="jobTitle">\n          <div ng-messages="speakerCtrl.speakerForm.jobTitle.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A job title is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Company</label>\n          <input ng-model="speakerCtrl.speaker.company" required name="company">\n          <div ng-messages="speakerCtrl.speakerForm.company.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A company is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n\n      <md-input-container class="md-block">\n        <label>Country</label>\n        <md-select ng-model="speakerCtrl.speaker.country" required>\n          <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">\n            {{country.country}}\n          </md-option>\n        </md-select>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="speakerCtrl.speaker.social.twitter">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="speakerCtrl.speaker.social.linkedIn">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="speakerCtrl.speaker.social.instagram">\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="speakerCtrl.speaker.social.github">\n        </md-input-container>\n      </div>\n      <div layout-gt-sm="row">\n        <md-switch ng-model="speakerCtrl.speaker.keynote" aria-label="Keynote" class="md-primary" >\n          Keynote\n        </md-switch>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.speakers">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
 $templateCache.put('media/speakers.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Media</span>\n      <span flex></span>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <table md-table md-row-select multiple ng-model="selected" id="mediaList">\n      <!-- <thead md-head md-order="medias.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="medias.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Email</span></th>\n          <th md-column><span>Job Title</span></th>\n          <th md-column>Phone</th>\n          <th md-column><span>Company</span></th>\n          <th md-column><span>Country</span></th>\n          <th md-column>Social</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="media" md-select-id="_id" md-auto-select ng-repeat="media in medias.medias | activeFlag:medias.activeFlag | orderBy: \'order\'">\n          <td md-cell>{{media.first}}</td>\n          <td md-cell>{{media.last}}</td>\n          <td md-cell>{{media.jobTitle}}</td>\n          <td md-cell>{{media.bio | limitTo: 15}}<span ng-if="media.bio && media.bio.length > 15">...</span></td>\n          <td md-cell>{{media.company}}</td>\n          <td md-cell>{{media.country | countryCode}}</td>\n          <td md-cell ng-bind-html="media.social | socialFlag"></td>\n          <td md-cell ng-bind-html="media.keynote | booleanFlag:true"></td>\n          <td md-cell><input type="number" ng-model="media.order" ng-change="medias.saveSpeaker(media)"></td>\n          <td md-cell>\n            <a ui-sref="conference.medias.media({mediaId: media._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="medias.removeSpeaker($event, media)" ng-show="media.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="medias.reactivateSpeaker(media)" ng-show="!media.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="media.published | booleanFlag" ng-click="medias.confirmPublication($event, media)"></td>\n          <td md-cell>\n            <span ng-bind-html="media.profilePic | photoIcon:\'Profile Pic\':\'person_pin\'" ng-click="medias.toggleImage(media, \'profilePic\')"></span>\n            <span ng-bind-html="media.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="medias.toggleImage(media, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="medias.query.limit" md-limit-options="[30, 50, 100]" md-page="medias.query.page" md-total="{{medias.medias.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
 $templateCache.put('sessions/sessionForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Session Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.sessions">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="sessionCtrl.sessionForm" ng-submit="sessionCtrl.saveSession()">\n    <md-content layout-padding="">\n      <md-input-container class="md-block">\n        <label>Name</label>\n        <input ng-model="sessionCtrl.session.name" required name="name">\n        <div ng-messages="sessionCtrl.sessionForm.name.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A session name is required.\n          </div>\n        </div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Description</label>\n        <textarea ng-model="sessionCtrl.session.description" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <!-- Speakers list -->\n      <md-toolbar class="md-table-toolbar md-accent md-hue-1 shortToolbar">\n        <div class="md-toolbar-tools">\n          <span>Speakers</span>\n          <span flex></span>\n          <md-icon md-font-set="material-icons" ng-click="sessionCtrl.openSpeakerDialog($event)">add_box</md-icon>\n        </div>\n      </md-toolbar>\n      <md-table-container>\n        <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n        <table md-table md-row-select multiple ng-model="selected" id="speakerList">\n          <!-- <thead md-head md-order="sessions.order" md-on-reorder="getDesserts"> -->\n          <thead md-head>\n            <tr md-row>\n              <th md-column><span>First</span></th>\n              <th md-column><span>Last</span></th>\n              <th md-column><span>Company</span></th>\n              <th md-column class="th-edit">Remove</th>\n            </tr>\n          </thead>\n          <tbody md-body>\n            <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in sessionCtrl.session.speakerIds | speakerDetails:sessionCtrl.speakers">\n              <td md-cell>{{speaker.first}}</td>\n              <td md-cell>{{speaker.last}}</td>\n              <td md-cell>{{speaker.company}}</td>\n              <td md-cell>\n                <!-- <a ng-click="sessionCtrl.editRoom($event, speaker)"><md-icon md-font-set="material-icons">edit</md-icon></a> -->\n                <a ng-click="sessionCtrl.removeSpeaker($event, speaker)"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </md-table-container>\n\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.sessions">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
-$templateCache.put('sessions/sessions.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Sessions</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="sessions.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ sessions.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="sessions.activeFlag | booleanFlag" ng-click="sessions.toggleActive()"></span>\n      <a ui-sref="conference.sessions.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="sessionList">\n      <!-- <thead md-head md-order="sessions.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="sessions.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Description</span></th>\n          <th md-column><span>Speakers</span></th>\n          <th md-column class="th-edit">Edit</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="session" md-select-id="_id" md-auto-select ng-repeat="session in sessions.sessions | activeFlag:sessions.activeFlag | orderBy: \'name\'">\n          <td md-cell>{{session.name}}</td>\n          <td md-cell>{{session.description}}</td>\n          <td md-cell>{{session.speakers}}</td>\n          <td md-cell>\n            <a ui-sref="conference.sessions.session({sessionId: session._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="sessions.removeSession($event, session)" ng-show="session.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="sessions.reactivateSession(session)" ng-show="!session.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="sessions.query.limit" md-limit-options="[30, 50, 100]" md-page="sessions.query.page" md-total="{{sessions.sessions.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
+$templateCache.put('sessions/sessions.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Sessions</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="sessions.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ sessions.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="sessions.activeFlag | booleanFlag" ng-click="sessions.toggleActive()"></span>\n      <a ui-sref="conference.sessions.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="sessionList">\n      <!-- <thead md-head md-order="sessions.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="sessions.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Description</span></th>\n          <th md-column><span>Speakers</span></th>\n          <th md-column class="th-edit">Edit</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="session" md-select-id="_id" md-auto-select ng-repeat="session in sessions.sessions | activeFlag:sessions.activeFlag | orderBy: \'name\'">\n          <td md-cell>{{session.name}}</td>\n          <td md-cell>{{session.description}}</td>\n          <td md-cell>\n            <ul>\n              <li ng-repeat="speaker in session.speakerIds | speakerDetails:sessions.speakers">\n                {{speaker.first}} {{speaker.last}}, {{speaker.company}}\n              </li>\n            </ul>\n          </td>\n          <td md-cell>\n            <a ui-sref="conference.sessions.session({sessionId: session._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="sessions.removeSession($event, session)" ng-show="session.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="sessions.reactivateSession(session)" ng-show="!session.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="sessions.query.limit" md-limit-options="[30, 50, 100]" md-page="sessions.query.page" md-total="{{sessions.sessions.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
 $templateCache.put('sessions/speakerForm.html','<md-dialog aria-label="Speakers">\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Add Speakers</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ng-click="cancel()">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <md-dialog-content>\n    <md-content layout-padding="">\n        <md-select ng-model="newSpeaker" ng-change="addSpeaker()" aria-label="speakers">\n          <md-option ng-repeat="speaker in speakers" value="{{speaker._id}}">\n            {{speaker.first}} {{speaker.last}}, {{speaker.company}}\n          </md-option>\n        </md-select>\n    </md-content>\n  </md-dialog-content>\n  <!-- <md-dialog-actions layout="row">\n    <span flex></span>\n    <md-button ng-click="addVenueRoom()"> Save </md-button>\n  </md-dialog-actions> -->\n</md-dialog>\n');
 $templateCache.put('speakers/speakerForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Speaker Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.speakers">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="speakerCtrl.speakerForm" ng-submit="speakerCtrl.saveSpeaker()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>First Name</label>\n          <input ng-model="speakerCtrl.speaker.first" required name="first">\n          <div ng-messages="speakerCtrl.speakerForm.first.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A first name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Last Name</label>\n          <input ng-model="speakerCtrl.speaker.last" required name="last">\n          <div ng-messages="speakerCtrl.speakerForm.last.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A last name is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Email</label>\n        <input required type="email" name="email" ng-model="speakerCtrl.speaker.email" ng-pattern="/^.+@.+\\..+$/" />\n        <div ng-messages="speakerCtrl.speakerForm.email.$error" role="alert">\n          <div ng-message-exp="[\'required\',\'pattern\']">\n            Your must enter an e-mail address.\n          </div>\n        </div>\n      </md-input-container>\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Title</label>\n          <input ng-model="speakerCtrl.speaker.jobTitle" required name="jobTitle">\n          <div ng-messages="speakerCtrl.speakerForm.jobTitle.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A job title is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Company</label>\n          <input ng-model="speakerCtrl.speaker.company" required name="company">\n          <div ng-messages="speakerCtrl.speakerForm.company.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A company is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n\n      <md-input-container class="md-block">\n        <label>Country</label>\n        <md-select ng-model="speakerCtrl.speaker.country" required>\n          <md-option ng-repeat="country in speakerCtrl.countries" value="{{country.code}}">\n            {{country.country}}\n          </md-option>\n        </md-select>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="speakerCtrl.speaker.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="speakerCtrl.speaker.social.twitter" type="url" name="twitter">\n          <div ng-messages="speakerCtrl.speakerForm.twitter.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="speakerCtrl.speaker.social.linkedIn" type="url" name="linkedIn">\n          <div ng-messages="speakerCtrl.speakerForm.linkedIn.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="speakerCtrl.speaker.social.instagram" type="url" name="instagram">\n          <div ng-messages="speakerCtrl.speakerForm.instagram.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="speakerCtrl.speaker.social.github" type="url" name="github">\n          <div ng-messages="speakerCtrl.speakerForm.github.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <div layout-gt-sm="row">\n        <md-switch ng-model="speakerCtrl.speaker.keynote" aria-label="Keynote" class="md-primary" >\n          Keynote\n        </md-switch>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.speakers">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
 $templateCache.put('speakers/speakers.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Speakers</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="speakers.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ speakers.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="speakers.activeFlag | booleanFlag" ng-click="speakers.toggleActive()"></span>\n      <a ui-sref="conference.speakers.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="speakerList">\n      <!-- <thead md-head md-order="speakers.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="speakers.query.order">\n        <tr md-row>\n          <th md-column><span>First</span></th>\n          <th md-column><span>Last</span></th>\n          <th md-column><span>Title</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column><span>Company</span></th>\n          <th md-column><span>Country</span></th>\n          <th md-column>Social</th>\n          <th md-column>Keynote</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="speaker" md-select-id="_id" md-auto-select ng-repeat="speaker in speakers.speakers | activeFlag:speakers.activeFlag | orderBy: \'order\'">\n          <td md-cell>{{speaker.first}}</td>\n          <td md-cell>{{speaker.last}}</td>\n          <td md-cell>{{speaker.jobTitle}}</td>\n          <td md-cell>{{speaker.bio | limitTo: 15}}<span ng-if="speaker.bio && speaker.bio.length > 15">...</span></td>\n          <td md-cell>{{speaker.company}}</td>\n          <td md-cell>{{speaker.country | countryCode}}</td>\n          <td md-cell ng-bind-html="speaker.social | socialFlag"></td>\n          <td md-cell ng-bind-html="speaker.keynote | booleanFlag:true"></td>\n          <td md-cell><input type="number" ng-model="speaker.order" ng-change="speakers.saveSpeaker(speaker)"></td>\n          <td md-cell>\n            <a ui-sref="conference.speakers.speaker({speakerId: speaker._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="speakers.removeSpeaker($event, speaker)" ng-show="speaker.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="speakers.reactivateSpeaker(speaker)" ng-show="!speaker.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="speaker.published | booleanFlag" ng-click="speakers.confirmPublication($event, speaker)"></td>\n          <td md-cell>\n            <span ng-bind-html="speaker.profilePic | photoIcon:\'Profile Pic\':\'person_pin\'" ng-click="speakers.toggleImage(speaker, \'profilePic\')"></span>\n            <span ng-bind-html="speaker.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="speakers.toggleImage(speaker, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="speakers.query.limit" md-limit-options="[30, 50, 100]" md-page="speakers.query.page" md-total="{{speakers.speakers.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
-$templateCache.put('sponsors/sponsorForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Sponsor Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.sponsors">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="sponsorCtrl.sponsorForm" ng-submit="sponsorCtrl.saveSponsor()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="sponsorCtrl.sponsor.name" required name="name">\n          <div ng-messages="sponsorCtrl.sponsorForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Level</label>\n          <md-select ng-model="sponsorCtrl.sponsor.level" required name="level">\n            <md-option ng-repeat="level in sponsorCtrl.levels" value="{{level.code}}">\n              {{level.name}}\n            </md-option>\n          </md-select>\n          <div ng-messages="sponsorCtrl.sponsorForm.level.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A level is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Url</label>\n        <input type="url" ng-model="sponsorCtrl.sponsor.url" required name="url">\n        <div ng-messages="sponsorCtrl.sponsorForm.url.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A url is required.\n          </div>\n          <div ng-message-exp="[\'url\']">\n            Urls must begin with http://\n          </div>\n        </div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="sponsorCtrl.sponsor.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="sponsorCtrl.sponsor.social.twitter" type="url" name="twitter">\n          <div ng-messages="sponsorCtrl.sponsorForm.twitter.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="sponsorCtrl.sponsor.social.linkedIn" type="url" name="linkedIn">\n          <div ng-messages="sponsorCtrl.sponsorForm.linkedIn.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="sponsorCtrl.sponsor.social.instagram" type="url" name="instagram">\n          <div ng-messages="sponsorCtrl.sponsorForm.instagram.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="sponsorCtrl.sponsor.social.github" type="url" name="github">\n          <div ng-messages="sponsorCtrl.sponsorForm.github.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.sponsors">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
-$templateCache.put('sponsors/sponsors.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Sponsors</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="sponsors.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ sponsors.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="sponsors.activeFlag | booleanFlag" ng-click="sponsors.toggleActive()"></span>\n      <a ui-sref="conference.sponsors.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="sponsorList">\n      <!-- <thead md-head md-order="sponsors.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="sponsors.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Level</span></th>\n          <th md-column><span>Url</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column>Social</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Published</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="sponsor" md-select-id="_id" md-auto-select ng-repeat="sponsor in sponsors.sponsors | activeFlag:sponsors.activeFlag | orderBy: [\'level\',\'order\']">\n          <td md-cell>{{sponsor.name}}</td>\n          <td md-cell ng-bind-html="sponsor.level | sponsorLevels"></td>\n          <td md-cell>{{sponsor.url}}</td>\n          <td md-cell>{{sponsor.bio | limitTo: 15}}<span ng-if="sponsor.bio && sponsor.bio.length > 15">...</span></td>\n          <td md-cell ng-bind-html="sponsor.social | socialFlag"></td>\n          <td md-cell><input type="number" ng-model="sponsor.order" ng-change="sponsors.saveSponsor(sponsor)"></td>\n          <td md-cell>\n            <a ui-sref="conference.sponsors.sponsor({sponsorId: sponsor._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="sponsors.removeSponsor($event, sponsor)" ng-show="sponsor.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="sponsors.reactivateSponsor(sponsor)" ng-show="!sponsor.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell ng-bind-html="sponsor.published | booleanFlag" ng-click="sponsors.confirmPublication($event, sponsor)"></td>\n          <td md-cell>\n            <span ng-bind-html="sponsor.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="sponsors.toggleImage(sponsor, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="sponsors.query.limit" md-limit-options="[30, 50, 100]" md-page="sponsors.query.page" md-total="{{sponsors.sponsors.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
 $templateCache.put('user/login.html','\n<md-button class="md-raised" ng-href={{login.link}}>Login</md-button>\n');
 $templateCache.put('user/userWidget.html','<div class="profile-menu">\n  <div ng-click="userWidget.toggleMenu()" class="profile-details">\n    <div class="profile-pic">\n\n      <!--<img ng-src="{{userWidget.user.image}}" class="md-avatar" alt="{{userWidget.user.name}}" />-->\n      <!-- <img src="./img/svg/avatar-1.svg" alt="{{userWidget.user.name}}" /> -->\n    </div>\n    <div class="profile-info" >\n      {{userWidget.user.name}} <md-icon md-font-set="material-icons" ng-show="!userWidget.showMenu">keyboard_arrow_down</md-icon> <md-icon md-font-set="material-icons" ng-show="userWidget.showMenu">keyboard_arrow_up</md-icon>\n    </div>\n  </div>\n  <md-list ng-cloak ng-show="userWidget.showMenu" class="main-menu">\n    <md-list-item ui-sref="profile">\n      <md-icon md-font-set="material-icons">person</md-icon> View Profile\n    </md-list-item>\n    <md-list-item ui-sref="logout">\n      <md-icon md-font-set="material-icons">exit_to_app</md-icon> Logout\n    </md-list-item>\n\n    <md-divider></md-divider>\n  </md-list>\n</div>\n');
+$templateCache.put('sponsors/sponsorForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Sponsor Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.sponsors">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="sponsorCtrl.sponsorForm" ng-submit="sponsorCtrl.saveSponsor()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="sponsorCtrl.sponsor.name" required name="name">\n          <div ng-messages="sponsorCtrl.sponsorForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Level</label>\n          <md-select ng-model="sponsorCtrl.sponsor.level" required name="level">\n            <md-option ng-repeat="level in sponsorCtrl.levels" value="{{level.code}}">\n              {{level.name}}\n            </md-option>\n          </md-select>\n          <div ng-messages="sponsorCtrl.sponsorForm.level.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A level is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n      <md-input-container class="md-block">\n        <label>Url</label>\n        <input type="url" ng-model="sponsorCtrl.sponsor.url" required name="url">\n        <div ng-messages="sponsorCtrl.sponsorForm.url.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            A url is required.\n          </div>\n          <div ng-message-exp="[\'url\']">\n            Urls must begin with http://\n          </div>\n        </div>\n      </md-input-container>\n\n      <md-input-container class="md-block">\n        <label>Bio</label>\n        <textarea ng-model="sponsorCtrl.sponsor.bio" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Twitter</label>\n          <input ng-model="sponsorCtrl.sponsor.social.twitter" type="url" name="twitter">\n          <div ng-messages="sponsorCtrl.sponsorForm.twitter.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>LinkedIn</label>\n          <input ng-model="sponsorCtrl.sponsor.social.linkedIn" type="url" name="linkedIn">\n          <div ng-messages="sponsorCtrl.sponsorForm.linkedIn.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Instagram</label>\n          <input ng-model="sponsorCtrl.sponsor.social.instagram" type="url" name="instagram">\n          <div ng-messages="sponsorCtrl.sponsorForm.instagram.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Github</label>\n          <input ng-model="sponsorCtrl.sponsor.social.github" type="url" name="github">\n          <div ng-messages="sponsorCtrl.sponsorForm.github.$error" role="alert">\n            <div ng-message-exp="[\'url\']">\n              You must start with https://\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.sponsors">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
+$templateCache.put('sponsors/sponsors.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Sponsors</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="sponsors.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ sponsors.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="sponsors.activeFlag | booleanFlag" ng-click="sponsors.toggleActive()"></span>\n      <a ui-sref="conference.sponsors.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="sponsorList">\n      <!-- <thead md-head md-order="sponsors.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="sponsors.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Level</span></th>\n          <th md-column><span>Url</span></th>\n          <th md-column><span>Bio</span></th>\n          <th md-column>Social</th>\n          <th md-column md-desc>Order</th>\n          <th md-column class="th-edit">Edit</th>\n          <th md-column class="th-edit">Images</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="sponsor" md-select-id="_id" md-auto-select ng-repeat="sponsor in sponsors.sponsors | activeFlag:sponsors.activeFlag | orderBy: [\'level\',\'order\']">\n          <td md-cell>{{sponsor.name}}</td>\n          <td md-cell ng-bind-html="sponsor.level | sponsorLevels"></td>\n          <td md-cell>{{sponsor.url}}</td>\n          <td md-cell>{{sponsor.bio | limitTo: 15}}<span ng-if="sponsor.bio && sponsor.bio.length > 15">...</span></td>\n          <td md-cell ng-bind-html="sponsor.social | socialFlag"></td>\n          <td md-cell><input type="number" ng-model="sponsor.order" ng-change="sponsors.saveSponsor(sponsor)"></td>\n          <td md-cell>\n            <a ui-sref="conference.sponsors.sponsor({sponsorId: sponsor._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="sponsors.removeSponsor($event, sponsor)" ng-show="sponsor.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="sponsors.reactivateSponsor(sponsor)" ng-show="!sponsor.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n          <td md-cell>\n            <span ng-bind-html="sponsor.companyLogo | photoIcon:\'Company Logo\':\'business\'" ng-click="sponsors.toggleImage(sponsor, \'companyLogo\')"></span>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="sponsors.query.limit" md-limit-options="[30, 50, 100]" md-page="sponsors.query.page" md-total="{{sponsors.sponsors.count}}" md-page-select></md-table-pagination>\n\n</div>\n');
 $templateCache.put('venues/venueForm.html','<div>\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Venue Details</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ui-sref="conference.venues">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <form name="venueCtrl.venueForm" ng-submit="venueCtrl.saveVenue()">\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="venueCtrl.venue.name" required name="name">\n          <div ng-messages="venueCtrl.venueForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Capacity</label>\n          <input ng-model="venueCtrl.venue.capacity" name="capacity">\n        </md-input-container>\n      </div>\n\n      <md-input-container class="md-block">\n        <label>Description</label>\n        <textarea ng-model="venueCtrl.venue.description" md-select-on-focus rows="5"></textarea>\n      </md-input-container>\n\n\n      <md-input-container class="md-block">\n        <label>Address</label>\n        <input ng-model="venueCtrl.venue.address" required name="address">\n        <div ng-messages="venueCtrl.venueForm.address.$error" role="alert">\n          <div ng-message-exp="[\'required\']">\n            An address is required.\n          </div>\n        </div>\n      </md-input-container>\n\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>City</label>\n          <input ng-model="venueCtrl.venue.city" required name="city">\n          <div ng-messages="venueCtrl.venueForm.city.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A city is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Country</label>\n          <md-select ng-model="venueCtrl.venue.country" required>\n            <md-option ng-repeat="country in venueCtrl.countries" value="{{country.code}}">\n              {{country.country}}\n            </md-option>\n          </md-select>\n          <div ng-messages="venueCtrl.venueForm.country.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A country is required.\n            </div>\n          </div>\n        </md-input-container>\n      </div>\n\n      <!-- Rooms list -->\n      <div ng-show="!venueCtrl.newVenue">\n        <md-toolbar class="md-table-toolbar md-accent md-hue-1 shortToolbar">\n          <div class="md-toolbar-tools">\n            <span>Venue Rooms</span>\n            <span flex></span>\n            <!-- <md-switch ng-model="venues.activeFlag" aria-label="Active Switch" class="md-primary" >\n              {{ venues.activeFlag | activeStatus}}\n            </md-switch> -->\n            <md-icon md-font-set="material-icons" ng-click="venueCtrl.openVenueRoomDialog($event)">add_box</md-icon>\n          </div>\n        </md-toolbar>\n        <md-table-container>\n          <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n          <table md-table md-row-select multiple ng-model="selected" id="venueRoomList">\n            <!-- <thead md-head md-order="venues.order" md-on-reorder="getDesserts"> -->\n            <thead md-head>\n              <tr md-row>\n                <th md-column><span>Name</span></th>\n                <th md-column><span>Capacity</span></th>\n                <th md-column class="th-edit">Edit</th>\n              </tr>\n            </thead>\n            <tbody md-body>\n              <tr md-row md-select="venueRoom" md-select-id="_id" md-auto-select ng-repeat="venueRoom in venueCtrl.venue.rooms">\n                <td md-cell>{{venueRoom.name}}</td>\n                <td md-cell>{{venueRoom.capacity}}</td>\n                <td md-cell>\n                  <a ng-click="venueCtrl.editRoom($event, venueRoom)"><md-icon md-font-set="material-icons">edit</md-icon></a>\n                  <a ng-click="venueCtrl.removeRoom($event, venueRoom)"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n                </td>\n              </tr>\n            </tbody>\n          </table>\n        </md-table-container>\n      </div>\n\n    </md-content>\n    <md-actions layout="row">\n      <span flex></span>\n      <md-button class="md-raised md-danger" ui-sref="conference.venues">Cancel</md-button>\n      <md-button class="md-raised md-primary" type="submit" md-autofocus>Save</md-button>\n    </md-actions>\n  </form>\n</div>\n');
 $templateCache.put('venues/venueRoomForm.html','<md-dialog aria-label="Venue Room">\n  <md-toolbar>\n    <div class="md-toolbar-tools">\n      <h2>Add Venue Room</h2>\n      <span flex></span>\n      <md-button class="md-icon-button" ng-click="cancel()">\n        <md-icon md-font-set="material-icons">close</md-icon>\n      </md-button>\n    </div>\n  </md-toolbar>\n  <md-dialog-content>\n    <md-content layout-padding="">\n      <div layout-gt-sm="row">\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Name</label>\n          <input ng-model="newVenueRoom.name" required name="name">\n          <div ng-messages="venueForm.name.$error" role="alert">\n            <div ng-message-exp="[\'required\']">\n              A name is required.\n            </div>\n          </div>\n        </md-input-container>\n        <md-input-container class="md-block" flex-gt-sm>\n          <label>Capacity</label>\n          <input ng-model="newVenueRoom.capacity" name="capacity">\n        </md-input-container>\n      </div>\n    </md-content>\n  </md-dialog-content>\n  <md-dialog-actions layout="row">\n    <span flex></span>\n    <md-button ng-click="addVenueRoom()"> Save </md-button>\n  </md-dialog-actions>\n</md-dialog>\n');
 $templateCache.put('venues/venues.html','<div ui-view>\n  <md-toolbar class="md-table-toolbar md-accent">\n    <div class="md-toolbar-tools">\n      <span>Venues</span>\n      <span flex></span>\n      <!-- <md-switch ng-model="venues.activeFlag" aria-label="Active Switch" class="md-primary" >\n        {{ venues.activeFlag | activeStatus}}\n      </md-switch> -->\n      <span ng-bind-html="venues.activeFlag | booleanFlag" ng-click="venues.toggleActive()"></span>\n      <a ui-sref="conference.venues.new"><md-icon md-font-set="material-icons">add_box</md-icon></a>\n    </div>\n  </md-toolbar>\n\n  <!-- exact table from live demo -->\n  <md-table-container>\n    <!-- <table md-table md-row-select multiple ng-model="selected" md-progress="promise"> -->\n    <table md-table md-row-select multiple ng-model="selected" id="venueList">\n      <!-- <thead md-head md-order="venues.order" md-on-reorder="getDesserts"> -->\n      <thead md-head md-order="venues.query.order">\n        <tr md-row>\n          <th md-column><span>Name</span></th>\n          <th md-column><span>Capacity</span></th>\n          <th md-column><span>City</span></th>\n          <th md-column><span>Country</span></th>\n          <th md-column>Rooms</th>\n          <th md-column class="th-edit">Edit</th>\n        </tr>\n      </thead>\n      <tbody md-body>\n        <tr md-row md-select="venue" md-select-id="_id" md-auto-select ng-repeat="venue in venues.venues | activeFlag:venues.activeFlag">\n          <td md-cell>{{venue.name}}</td>\n          <td md-cell>{{venue.capacity}}</td>\n          <td md-cell>{{venue.city}}</td>\n          <td md-cell>{{venue.country}}</td>\n          <td md-cell>{{venue.rooms.length}}</td>\n          <td md-cell>\n            <a ui-sref="conference.venues.venue({venueId: venue._id})"><md-icon md-font-set="material-icons">edit</md-icon></a>\n            <a ng-click="venues.removeSponsor($event, venue)" ng-show="venue.active"><md-icon md-font-set="material-icons">remove_circle</md-icon></a>\n            <a ng-click="venues.reactivateSponsor(venue)" ng-show="!venue.active"><md-icon md-font-set="material-icons">undo</md-icon></a>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n  </md-table-container>\n\n  <md-table-pagination md-limit="venues.query.limit" md-limit-options="[30, 50, 100]" md-page="venues.query.page" md-total="{{venues.venues.count}}" md-page-select></md-table-pagination>\n\n</div>\n');}]);
@@ -661,6 +666,7 @@ angular.module('constants', [])
     cloud_name: 'initiate',
     upload_preset: 'y9nqporc'
   })
+  .constant('SESSION_TYPES', ['session', 'keynote', 'break'])
   .constant('COUNTRIES', [
     {code: 'AF', country: 'AFGHANISTAN'},
     {code: 'AX', country: 'ÅLAND ISLANDS'},
@@ -914,7 +920,6 @@ angular.module('app.filters', [])
   'ngInject';
 
   return function (level) {
-    console.log(PARTNER[level-1])
     return PARTNER[level-1].name;
   };
 })
@@ -928,6 +933,19 @@ angular.module('app.filters', [])
     });
     return country[0].country;
   };
+})
+.filter('speakerDetails', function () {
+  return function(speakerIds, speakers) {
+    if(!speakerIds || !speakers) return true;
+    var populatedArray = speakerIds.map(function (speakerId) {
+      var x = speakers.filter(function (speaker) {
+        return speaker._id.toString() === speakerId;
+      });
+      return x[0];
+    })
+    // console.log(populatedArray);
+    return populatedArray;
+  }
 })
 ;
 
@@ -1719,40 +1737,40 @@ angular.module('sponsors', [])
     page: 1
   };
 
-  this.confirmPublication = function(ev, sponsor) {
-    var action = sponsor.published ? 'un-publish' : 'publication';
-    // Appending dialog to document.body to cover sidenav in docs app
-    var confirm = $mdDialog.confirm()
-          .title('Confirm ' + action)
-          .textContent('Confirm ' + action + ' of ' + sponsor.name)
-          .ariaLabel('Sponsor ' + action)
-          .targetEvent(ev)
-          .ok('Yes')
-          .cancel('Cancel');
-    $mdDialog.show(confirm).then(function() {
-      sponsor.published = !sponsor.published;
-      if (!sponsor.published) {
-        sponsor.one('unpublish').get().then(function () {
-
-        }, function (err) {
-          sponsor.published = !sponsor.published;
-          $mdDialog.show(
-             $mdDialog.alert()
-              .parent(angular.element(document.querySelector('#sponsorList')))
-              .clickOutsideToClose(true)
-              .title('Cannot Unpublish')
-              .textContent(err)
-              .ariaLabel('Unpublish Error')
-              .ok('Got it!')
-              .targetEvent(ev)
-            );
-        });
-      }
-      else {
-        sponsor.save();
-      }
-    });
-  };
+  // this.confirmPublication = function(ev, sponsor) {
+  //   var action = sponsor.published ? 'un-publish' : 'publication';
+  //   // Appending dialog to document.body to cover sidenav in docs app
+  //   var confirm = $mdDialog.confirm()
+  //         .title('Confirm ' + action)
+  //         .textContent('Confirm ' + action + ' of ' + sponsor.name)
+  //         .ariaLabel('Sponsor ' + action)
+  //         .targetEvent(ev)
+  //         .ok('Yes')
+  //         .cancel('Cancel');
+  //   $mdDialog.show(confirm).then(function() {
+  //     sponsor.published = !sponsor.published;
+  //     if (!sponsor.published) {
+  //       sponsor.one('unpublish').get().then(function () {
+  //
+  //       }, function (err) {
+  //         sponsor.published = !sponsor.published;
+  //         $mdDialog.show(
+  //            $mdDialog.alert()
+  //             .parent(angular.element(document.querySelector('#sponsorList')))
+  //             .clickOutsideToClose(true)
+  //             .title('Cannot Unpublish')
+  //             .textContent(err)
+  //             .ariaLabel('Unpublish Error')
+  //             .ok('Got it!')
+  //             .targetEvent(ev)
+  //           );
+  //       });
+  //     }
+  //     else {
+  //       sponsor.save();
+  //     }
+  //   });
+  // };
 
   this.removeSponsor = function(ev, sponsor) {
     // Appending dialog to document.body to cover sidenav in docs app
@@ -2102,6 +2120,10 @@ angular.module('sessions', [])
         sessions: function (Restangular, $stateParams) {
           'ngInject';
           return Restangular.one('conferences', $stateParams.confId).all('sessions').getList();
+        },
+        speakers: function (Restangular, $stateParams) {
+          'ngInject';
+          return Restangular.one('conferences', $stateParams.confId).all('speakers').getList();
         }
       }
     })
@@ -2143,11 +2165,12 @@ angular.module('sessions', [])
     })
     ;
 })
-.controller('SessionsCtrl', function (sessions, Restangular, $state, $stateParams, $mdMedia, $mdDialog, $rootScope, imageService) {
+.controller('SessionsCtrl', function (sessions, Restangular, $state, $stateParams, $mdMedia, $mdDialog, $rootScope, imageService, speakers) {
   'ngInject';
   var self = this;
   // this.sessions = Restangular.copy(sessions);
   this.sessions = sessions;
+  this.speakers = speakers;
 
   $rootScope.$on('sessionChange', function (event, session) {
     var newSession = true;
@@ -2181,7 +2204,7 @@ angular.module('sessions', [])
     // Appending dialog to document.body to cover sidenav in docs app
     var confirm = $mdDialog.confirm()
           .title('Confirm De-activation')
-          .textContent('Confirm de-activation of ' + session.first + ' ' + session.last)
+          .textContent('Confirm de-activation of ' + session.name)
           .ariaLabel('Session De-activation')
           .targetEvent(ev)
           .ok('Yes')
@@ -2270,8 +2293,6 @@ angular.module('sessions', [])
     $scope.cancel = function () {
       $mdDialog.cancel();
     }
-
-
   }
 
   this.removeSpeaker = function (ev, speaker) {
@@ -2290,17 +2311,290 @@ angular.module('sessions', [])
   }
 
 })
-.filter('speakerDetails', function () {
-  return function(speakerIds, speakers) {
-    if(!speakerIds || !speakers) return true;
-    var populatedArray = speakerIds.map(function (speakerId) {
-      var x = speakers.filter(function (speaker) {
-        return speaker._id.toString() === speakerId;
-      });
-      return x[0];
+;
+
+'use strict';
+
+angular.module('agendas', [])
+.config(function ($stateProvider) {
+  'ngInject';
+
+  $stateProvider
+    .state('conference.agendas', {
+      url: '/agendas',
+      // templateUrl: agendasTemplate,
+      templateUrl: 'agendas/agendas.html',
+      controller: 'AgendasCtrl as agendas',
+      resolve: {
+        $title: function () { return 'Agendas'; },
+        agendas: function (Restangular, $stateParams) {
+          'ngInject';
+          return Restangular.one('conferences', $stateParams.confId).all('agendas').getList();
+        }
+      }
     })
-    console.log(populatedArray);
-    return populatedArray;
+    .state('conference.agendas.agenda', {
+      url: '/:agendaId',
+      // templateUrl: agendaFormTemplate,
+      templateUrl: 'agendas/agendaForm.html',
+      controller: 'AgendaSessionFormCtrl as agendaCtrl',
+      resolve: {
+        agenda: function (Restangular, $stateParams) {
+          'ngInject';
+          return Restangular.one('conferences', $stateParams.confId).one('agendas', $stateParams.agendaId).get(function (agenda) {
+            return agenda;
+          });
+        },
+        sessions: function (Restangular, $stateParams) {
+          return Restangular.one('conferences', $stateParams.confId).all('sessions').getList();
+        },
+        speakers: function (Restangular, $stateParams) {
+          return Restangular.one('conferences', $stateParams.confId).all('speakers').getList();
+        },
+        $title: function () { return 'Edit Agenda'; },
+      }
+    })
+    ;
+})
+.controller('AgendasCtrl', function (agendas, Restangular, $state, $stateParams, $mdDialog, $rootScope) {
+  'ngInject';
+  var self = this;
+  // this.agendas = Restangular.copy(agendas);
+  this.agendas = agendas;
+
+  $rootScope.$on('agendaChange', function (event, agenda) {
+    var newAgenda = true;
+    self.agendas.map(function (s, index) {
+      if(s._id === agenda._id) {
+        newAgenda = false;
+        self.agendas.splice(index, 1, agenda);
+      }
+    });
+    if (newAgenda) self.agendas.push(agenda);
+  });
+  $rootScope.$on('removedAgenda', function (event, agenda) {
+    self.agendas = self.agendas.filter(function (s) {
+      if(s._id !== agenda._id) return true;
+    });
+  });
+
+
+  // hide inactive by default
+  this.activeFlag = true;
+  this.toggleActive = function () {
+    this.activeFlag = !this.activeFlag;
+  }
+
+  this.query = {
+    order: 'name',
+    limit: 30,
+    page: 1
+  };
+
+  this.openAgendaDialog = function(ev) {
+    $mdDialog.show({
+      controller: AgendaFormCtrl,
+      templateUrl: 'agendas/agendaCreateForm.html',
+      parent: angular.element(document.body),
+      targetEvent: ev,
+      clickOutsideToClose:true,
+      // fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+    })
+    .then(function(newAgenda) {
+      if(newAgenda) {
+        Restangular.one('conferences', $stateParams.confId).all('agendas').post(newAgenda).then(function (agenda) {
+          self.agendas.push(agenda);
+        });
+      }
+    });
+  }
+
+  function AgendaFormCtrl($scope, $mdDialog) {
+    $scope.addAgenda = function () {
+      $mdDialog.hide($scope.newAgenda);
+    }
+
+    $scope.cancel = function () {
+      $mdDialog.cancel();
+    }
+  }
+
+  this.confirmPrimary = function(ev, agenda) {
+    if(agenda.primary) return;
+
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title('Confirm Primary')
+          .textContent('Confirm setting of ' + agenda.name + ' as primary.')
+          .ariaLabel('Agenda ' + action)
+          .targetEvent(ev)
+          .ok('Yes')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+      var oldPrimary;
+      // set other agenda primary to false
+      self.agendas.forEach(function (agenda_item) {
+        if(agenda_item.primary) {
+          oldPrimary = agenda_item;
+          agenda_item.primary = false;
+        }
+      });
+      agenda.primary = !agenda.primary;
+      agenda.one('setPrimary').get().then(function () {
+      }, function (err) {
+        agenda.primary = !agenda.primary;
+        oldPrimary.primary = true;
+        $mdDialog.show(
+           $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#agendaList')))
+            .clickOutsideToClose(true)
+            .title('Cannot Set as Primary')
+            .textContent(err)
+            .ariaLabel('Set as Primary Error')
+            .ok('Got it!')
+            .targetEvent(ev)
+          );
+      });
+    });
+  };
+
+  this.removeAgenda = function(ev, agenda) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title('Confirm De-activation')
+          .textContent('Confirm de-activation of ' + agenda.name)
+          .ariaLabel('Agenda De-activation')
+          .targetEvent(ev)
+          .ok('Yes')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+      agenda.remove().then(function () {
+        //update the active flag against the agenda
+        agenda.active = false;
+      }, function (err) {
+        $mdDialog.show(
+           $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#agendaList')))
+            .clickOutsideToClose(true)
+            .title('Cannot De-activate')
+            .textContent(err)
+            .ariaLabel('De-activate Error')
+            .ok('Got it!')
+            .targetEvent(ev)
+          );
+      });
+    });
+  };
+
+  this.reactivateAgenda = function (agenda) {
+    agenda.active = true;
+    agenda.save();
+
+  }
+
+  this.saveAgenda = function (agenda) {
+    agenda.put().then(function (agenda) {
+      $rootScope.$emit('agendaChange', agenda);
+      $state.go('conference.agendas');
+    });
+  };
+})
+
+.controller('AgendaSessionFormCtrl', function (agenda, Restangular, $state, $stateParams, $rootScope, SESSION_TYPES, sessions, $mdDialog, speakers) {
+  'ngInject';
+
+  var self = this;
+  this.agenda = Restangular.copy(agenda);
+  this.sessions = sessions;
+  this.speakers = speakers;
+
+  // same controller used for new agendas and editing agendas
+  this.saveAgenda = function () {
+    self.agenda.put().then(function (agenda) {
+      $rootScope.$emit('agendaChange', agenda);
+      $state.go('conference.agendas');
+    });
+  };
+
+  this.removeSession = function(ev, session) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title('Confirm Removal')
+          .textContent('Confirm removal of ' + session.session.name)
+          .ariaLabel('Agenda Session Removal')
+          .targetEvent(ev)
+          .ok('Yes')
+          .cancel('Cancel');
+    $mdDialog.show(confirm).then(function() {
+      Restangular.one('conferences', $stateParams.confId).one('agendas', self.agenda._id).one('sessions', session._id).remove();
+      //
+      var index;
+      self.agenda.sessions.forEach(function (agendaSession, ind) {
+        if (agendaSession._id === session._id) {
+          index = ind;
+        }
+      });
+      self.agenda.sessions.splice(index, 1);
+    });
+  };
+
+  this.openAgendaSessionDialog = function(ev, agendaSession) {
+    $mdDialog.show({
+      controller: AgendaSessionFormCtrl,
+      templateUrl: 'agendas/agendaSessionForm.html',
+      parent: angular.element(document.body),
+      targetEvent: ev,
+      clickOutsideToClose:true,
+      locals: {
+        agendaSession: agendaSession
+      }
+      // fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+    })
+    .then(function(agendaSession) {
+      if(agendaSession._id) {
+        var session = {
+          start: new Date(agendaSession.start),
+          duration: agendaSession.duration,
+          sessionId: agendaSession.sessionId,
+          sessionType: agendaSession.sessionType
+        }
+        Restangular.one('conferences', $stateParams.confId).one('agendas', self.agenda._id).one('sessions', agendaSession._id).put(session).then(function (agenda) {
+          self.agenda = agenda;
+        });
+      }
+      else {
+        Restangular.one('conferences', $stateParams.confId).one('agendas', self.agenda._id).all('sessions').post(agendaSession).then(function (agenda) {
+          self.agenda = agenda;
+        });
+      }
+    });
+  }
+
+  function AgendaSessionFormCtrl($scope, $mdDialog, agendaSession) {
+    $scope.agendaSession = angular.copy(agendaSession);
+    $scope.agendaSession.start = new Date($scope.agendaSession.start);
+    $scope.sessions = sessions;
+    $scope.types = SESSION_TYPES;
+    $scope.saveAgendaSession = function () {
+      $mdDialog.hide($scope.agendaSession, $scope.existing);
+    }
+
+    $scope.cancel = function () {
+      $mdDialog.cancel();
+    }
+  }
+
+})
+.filter('sessionDetails', function () {
+  return function(agendaSessions, sessions) {
+    agendaSessions.forEach(function (agendaSession) {
+      sessions.forEach(function (session) {
+        if(agendaSession.sessionId === session._id.toString()) {
+          agendaSession.session = session;
+        }
+      });
+    });
+    return agendaSessions;
   }
 })
 ;
